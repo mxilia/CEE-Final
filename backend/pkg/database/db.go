@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mxilia/CEE-Final/internal/config"
+	"github.com/mxilia/CEE-Final/pkg/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

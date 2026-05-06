@@ -2,10 +2,10 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/mxilia/CEE-Final/internal/config"
-	"github.com/mxilia/CEE-Final/internal/infastructure/database"
-	"github.com/mxilia/CEE-Final/internal/infastructure/middleware"
-	"github.com/mxilia/CEE-Final/internal/infastructure/routes"
+	"github.com/mxilia/CEE-Final/pkg/config"
+	"github.com/mxilia/CEE-Final/pkg/database"
+	"github.com/mxilia/CEE-Final/pkg/middleware"
+	"github.com/mxilia/CEE-Final/pkg/routes"
 	"gorm.io/gorm"
 )
 
@@ -34,6 +34,8 @@ func setupRestServer(db *gorm.DB, cfg *config.Config) (*fiber.App, error) {
 		BodyLimit: 1 * 1024 * 1024,
 	})
 	middleware.FiberMiddleware(app, cfg)
-	routes.RegisterRoutes(app, db, cfg)
+	routes.RegisterPublicRoutes(app, db, cfg)
+	routes.RegisterPrivateRoutes(app, db, cfg)
+	routes.RegisterNotFoundRoute(app)
 	return app, nil
 }
