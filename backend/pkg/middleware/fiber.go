@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/mxilia/CEE-Final/internal/config"
+	"github.com/mxilia/CEE-Final/pkg/config"
 )
 
 func FiberMiddleware(app *fiber.App, cfg *config.Config) {
