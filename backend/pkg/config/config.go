@@ -34,6 +34,15 @@ type Config struct {
 
 	RedisAddr     string
 	RedisPassword string
+
+	// Optional: verify karaoke-generator callback signature
+	KaraokeCallbackHmacSecret string
+
+	// Karaoke generator (python) base URL, e.g. http://localhost:8001
+	KaraokeGeneratorURL string
+
+	// Public backend base URL used for callback_url construction, e.g. http://localhost:8080
+	BackendBaseURL string
 }
 
 func GetConfig(env string) *Config {
@@ -70,6 +79,10 @@ func GetConfig(env string) *Config {
 
 		RedisAddr:     getEnv("REDIS_ADDR", ""),
 		RedisPassword: getEnv("REDIS_PASSWORD", ""),
+
+		KaraokeCallbackHmacSecret: getEnv("KARAOKE_CALLBACK_HMAC_SECRET", ""),
+		KaraokeGeneratorURL:       getEnv("KARAOKE_GENERATOR_URL", "http://localhost:8001"),
+		BackendBaseURL:            getEnv("BACKEND_BASE_URL", "http://localhost:8080"),
 	}
 
 	cfg.DatabaseDSN = fmt.Sprintf(
