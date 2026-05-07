@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/mxilia/CEE-Final/internal/entities"
 	"github.com/mxilia/CEE-Final/pkg/config"
 	"github.com/mxilia/CEE-Final/pkg/database"
 	"github.com/mxilia/CEE-Final/pkg/middleware"
@@ -21,17 +22,21 @@ func setupDependencies(env string) (*gorm.DB, *config.Config, error) {
 		//db.Migrator().DropTable(&entities.Thread{}, &entities.User{}, &entities.Post{}, &entities.Like{}, &entities.Comment{}, &entities.Session{}, &entities.Announcement{})
 	}
 
-	/*
-		if err := db.AutoMigrate(&entities.Thread{}, &entities.User{}, &entities.Post{}, &entities.Like{}, &entities.Comment{}, &entities.Session{}, &entities.Announcement{}); err != nil {
-			return nil, nil, err
-		}
-	*/
+	if err := db.AutoMigrate(
+		&entities.User{},
+		&entities.Session{},
+		&entities.Song{},
+		&entities.SongData{},
+		&entities.KaraokeJob{},
+	); err != nil {
+		return nil, nil, err
+	}
 	return db, cfg, nil
 }
 
 func setupRestServer(db *gorm.DB, cfg *config.Config) (*fiber.App, error) {
 	app := fiber.New(fiber.Config{
-		BodyLimit: 1 * 1024 * 1024,
+		BodyLimit: 25 * 1024 * 1024,
 	})
 	middleware.FiberMiddleware(app, cfg)
 	routes.RegisterPublicRoutes(app, db, cfg)

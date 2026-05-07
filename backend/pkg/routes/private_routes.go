@@ -3,6 +3,8 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 
+	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke/handler/rest"
+
 	sessionHandler "github.com/mxilia/CEE-Final/internal/session/handler/rest"
 	sessionRepository "github.com/mxilia/CEE-Final/internal/session/repository"
 	sessionUseCase "github.com/mxilia/CEE-Final/internal/session/usecase"
@@ -30,6 +32,7 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userHandler := userHandler.NewHttpUserHandler(userUseCase, sessionUseCase, cfg)
 
 	sessionHandler := sessionHandler.NewHttpSessionHandler(sessionUseCase, userUseCase, cfg)
+	karaokeJobHandler := karaokeHandler.NewHttpKaraokeJobHandler(db, cfg)
 
 	/* === Routes === */
 
@@ -54,4 +57,8 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 		"/:id",
 		userHandler.DeleteUser,
 	)
+
+	karaokeGroup := api.Group("/karaoke")
+	karaokeJobsGroup := karaokeGroup.Group("/jobs")
+	karaokeJobsGroup.Post("/", karaokeJobHandler.CreateJob)
 }
