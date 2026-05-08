@@ -19,7 +19,13 @@ func setupDependencies(env string) (*gorm.DB, *config.Config, error) {
 	}
 
 	if env == "dev" {
-		//db.Migrator().DropTable(&entities.Thread{}, &entities.User{}, &entities.Post{}, &entities.Like{}, &entities.Comment{}, &entities.Session{}, &entities.Announcement{})
+		/*
+			db.Migrator().DropTable(&entities.User{},
+				&entities.Session{},
+				&entities.Song{},
+				&entities.SongData{},
+				&entities.KaraokeJob{})
+		*/
 	}
 
 	if err := db.AutoMigrate(
