@@ -8,13 +8,18 @@ export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(searchParams.get('q') || '');
 
   useEffect(() => {
     // Handle search logic here
 
   }, [searchText]);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit();
+    }
+  };
 
   const handleSearchSubmit = ()=>{
     // Update the URL with the search query
@@ -32,6 +37,7 @@ export default function SearchBar() {
                     p-2 rounded-lg w-full
                     "
         onChange={(e:any)=>setSearchText(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <button className="absolute right-2 top-2 
                         text-gray-400 hover:text-white"
