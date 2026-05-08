@@ -1,4 +1,4 @@
-// src/components/lobby/KaraokeClient.tsx
+// app/lobby/[song_id]/KaraokeClient.tsx
 
 "use client"
 
@@ -49,7 +49,7 @@ function freqToNote(freq: number) {
   return `${note}${octave}`
 }
 
-export default function KaraokeClient({
+export function KaraokeClient({
   title,
   artist,
   frequencyArray
@@ -64,7 +64,7 @@ export default function KaraokeClient({
     useState("--")
 
   const [clarity, setClarity] =
-    useState<number>(0)
+    useState(0)
 
   const [score, setScore] =
     useState(0)
@@ -104,7 +104,7 @@ export default function KaraokeClient({
           performance.now() -
           startTimeRef.current
 
-        // frequency array at 10ms intervals
+        // 100fps array (10ms)
         const index = Math.floor(
           elapsed / 10
         )
@@ -113,7 +113,6 @@ export default function KaraokeClient({
           frequencyArray[index]
 
         if (expectedFreq) {
-          // cents difference
           const cents =
             1200 *
             Math.log2(
@@ -145,70 +144,64 @@ export default function KaraokeClient({
   async function startMic() {
     if (running) return
 
-    try {
-      setRunning(true)
+    setRunning(true)
 
-      startTimeRef.current =
-        performance.now()
+    startTimeRef.current =
+      performance.now()
 
-      const stream =
-        await navigator.mediaDevices.getUserMedia(
-          {
-            audio: {
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false,
-              channelCount: 1,
-             // latency: 0
-            }
+    const stream =
+      await navigator.mediaDevices.getUserMedia(
+        {
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false,
+            channelCount: 1,
+            //latency: 0
           }
-        )
-
-      const audioContext =
-        new AudioContext({
-          latencyHint:
-            "interactive",
-          sampleRate: 48000
-        })
-
-      await audioContext.audioWorklet.addModule(
-        "/worklets/pitch-processor.js"
+        }
       )
 
-      const source =
-        audioContext.createMediaStreamSource(
-          stream
-        )
+    const audioContext =
+      new AudioContext({
+        latencyHint: "interactive",
+        sampleRate: 48000
+      })
 
-      const node =
-        new AudioWorkletNode(
-          audioContext,
-          "pitch-processor"
-        )
+    await audioContext.audioWorklet.addModule(
+      "/worklets/pitch-processor.js"
+    )
 
-      node.port.onmessage = (
-        event: MessageEvent<PitchMessage>
-      ) => {
-        const {
-          pitch,
-          clarity
-        } = event.data
+    const source =
+      audioContext.createMediaStreamSource(
+        stream
+      )
 
-        if (!pitch) return
+    const node =
+      new AudioWorkletNode(
+        audioContext,
+        "pitch-processor"
+      )
 
-        if (clarity < 0.75) return
+    node.port.onmessage = (
+      event: MessageEvent<PitchMessage>
+    ) => {
+      const {
+        pitch,
+        clarity
+      } = event.data
 
-        pitchRef.current = pitch
+      if (!pitch) return
 
-        clarityRef.current = clarity
-      }
+      // ignore weak detections
+      if (clarity < 0.75) return
 
-      source.connect(node)
-    } catch (err) {
-      console.error(err)
+      pitchRef.current = pitch
 
-      setRunning(false)
+      clarityRef.current = clarity
     }
+
+    source.connect(node)
   }
 
   return (
@@ -274,9 +267,7 @@ export default function KaraokeClient({
             </div>
 
             <div className="text-4xl mt-2">
-              {Number(
-                clarity || 0
-              ).toFixed(2)}
+              {clarity.toFixed(2)}
             </div>
           </div>
         </div>
