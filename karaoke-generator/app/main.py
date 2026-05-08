@@ -103,6 +103,7 @@ def generate(req: GenerateRequest, background: BackgroundTasks) -> GenerateRespo
         # Force settings load early to fail fast on missing env.
         _ = get_settings().supabase_url
     except Exception as e:
+        print("Config error:", e)
         raise HTTPException(status_code=500, detail=f"Config error: {e}") from e
 
     try:
@@ -113,6 +114,7 @@ def generate(req: GenerateRequest, background: BackgroundTasks) -> GenerateRespo
         _require_exe("yt-dlp")
         _require_exe("ffmpeg")
     except DependencyError as e:
+        print("Dependency error:", e)
         raise HTTPException(status_code=500, detail=str(e)) from e
 
     create_job(job_id)
