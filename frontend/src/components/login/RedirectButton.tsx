@@ -3,7 +3,7 @@
 export default function RedirectButton() {
     
     const handleRedirect = () => {
-        window.location.href = 'https://accounts.google.com/signin/v2/identifier?service=accountsettings&continue=https%3A%2F%2Fmyaccount.google.com%2F&flowName=GlifWebSignIn&flowEntry=ServiceLogin';
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`;
         //console.log("Redirecting to Google Sign-In...  najaaa");
     };
 

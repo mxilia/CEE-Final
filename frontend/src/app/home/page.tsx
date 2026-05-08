@@ -1,6 +1,6 @@
 
-import SearchBar from "../components/home/searchBar";
-import SongList from "../components/home/song-list";
+import SearchBar from "../../components/home/searchBar";
+import SongList from "../../components/home/song-list";
 
 
 export default function Home() {
