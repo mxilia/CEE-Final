@@ -9,10 +9,3 @@ type SongUseCase interface {
 	PatchSong(id uint, song *entities.Song) error
 	DeleteSong(id uint) error
 }
-
-type SongDataUseCase interface {
-	CreateSongData(songData *entities.SongData) error
-	FindSongDataBySongID(songID uint) (*entities.SongData, error)
-	PatchSongData(songID uint, songData *entities.SongData) error
-	DeleteSongData(songID uint) error
-}

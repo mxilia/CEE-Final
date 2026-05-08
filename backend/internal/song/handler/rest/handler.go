@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"errors"
 	"math"
 	"strconv"
 
@@ -14,16 +13,14 @@ import (
 )
 
 type HttpSongHandler struct {
-	db              *gorm.DB
-	songUseCase     usecase.SongUseCase
-	songDataUseCase usecase.SongDataUseCase
+	db          *gorm.DB
+	songUseCase usecase.SongUseCase
 }
 
-func NewHttpSongHandler(db *gorm.DB, songUseCase usecase.SongUseCase, songDataUseCase usecase.SongDataUseCase) *HttpSongHandler {
+func NewHttpSongHandler(db *gorm.DB, songUseCase usecase.SongUseCase) *HttpSongHandler {
 	return &HttpSongHandler{
-		db:              db,
-		songUseCase:     songUseCase,
-		songDataUseCase: songDataUseCase,
+		db:          db,
+		songUseCase: songUseCase,
 	}
 }
 
@@ -34,6 +31,18 @@ func parseUintParam(c *fiber.Ctx, key string) (uint, error) {
 		return 0, appError.ErrInvalidData
 	}
 	return uint(id), nil
+}
+
+func (h *HttpSongHandler) CreateSong(c *fiber.Ctx) error {
+	song := &entities.Song{}
+	if err := c.BodyParser(song); err != nil {
+		return responses.Error(c, appError.ErrInvalidData)
+	}
+
+	if err := h.songUseCase.CreateSong(song); err != nil {
+		return responses.Error(c, err)
+	}
+	return c.Status(201).JSON(song)
 }
 
 func (h *HttpSongHandler) FindAllSongs(c *fiber.Ctx) error {
@@ -66,31 +75,4 @@ func (h *HttpSongHandler) FindSongByID(c *fiber.Ctx) error {
 		return responses.Error(c, err)
 	}
 	return c.JSON(song)
-}
-
-func (h *HttpSongHandler) FindSongDataBySongID(c *fiber.Ctx) error {
-	songID, err := parseUintParam(c, "song_id")
-	if err != nil {
-		return responses.Error(c, err)
-	}
-
-	songData, err := h.songDataUseCase.FindSongDataBySongID(songID)
-	if err != nil {
-		// If song-data isn't ready yet, return a 202 with job status.
-		if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, appError.ErrRecordNotFound) {
-			var job entities.KaraokeJob
-			jerr := h.db.Order("updated_at desc").First(&job, "song_id = ?", songID).Error
-			if jerr == nil {
-				return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
-					"song_id": songID,
-					"status":  job.Status,
-					"job_id":  job.JobID,
-					"error":   job.Error,
-				})
-			}
-			// Fall back to default 404 behavior if we don't have a job either.
-		}
-		return responses.Error(c, err)
-	}
-	return c.JSON(songData)
 }

@@ -4,11 +4,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 
-	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke/handler/rest"
 	songHandler "github.com/mxilia/CEE-Final/internal/song/handler/rest"
 	songRepository "github.com/mxilia/CEE-Final/internal/song/repository"
 	songUseCase "github.com/mxilia/CEE-Final/internal/song/usecase"
-	"github.com/mxilia/CEE-Final/internal/transaction"
 
 	userHandler "github.com/mxilia/CEE-Final/internal/user/handler/rest"
 	userRepository "github.com/mxilia/CEE-Final/internal/user/repository"
@@ -17,6 +15,8 @@ import (
 	sessionRepository "github.com/mxilia/CEE-Final/internal/session/repository"
 	sessionUseCase "github.com/mxilia/CEE-Final/internal/session/usecase"
 
+	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke/handler/rest"
+
 	"github.com/mxilia/CEE-Final/pkg/config"
 )
 
@@ -24,7 +24,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	/* === Dependencies Wiring === */
 
-	txManager := transaction.NewGormTxManager(db)
+	// txManager := transaction.NewGormTxManager(db)
 
 	sessionRepo := sessionRepository.NewGormSessionRepository(db)
 	sessionUseCase := sessionUseCase.NewSessionService(sessionRepo)
@@ -34,12 +34,10 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userHandler := userHandler.NewHttpUserHandler(userUseCase, sessionUseCase, cfg)
 
 	songRepo := songRepository.NewGormSongRepository(db)
-	songDataRepo := songRepository.NewGormSongDataRepository(db)
-	songSvc := songUseCase.NewSongService(songRepo, songDataRepo)
-	songDataSvc := songUseCase.NewSongDataService(songDataRepo, songRepo)
-	songHandler := songHandler.NewHttpSongHandler(db, songSvc, songDataSvc)
+	songUseCase := songUseCase.NewSongService(songRepo)
+	songHandler := songHandler.NewHttpSongHandler(db, songUseCase)
 
-	karaokeJobHandler := karaokeHandler.NewHttpKaraokeJobHandler(db, txManager, cfg)
+	KaraokeJobHandler := karaokeHandler.NewHttpKaraokeHandler()
 
 	/* === Routes === */
 
@@ -60,14 +58,10 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userGroup.Get("/email/:email", userHandler.FindUserByEmail)
 
 	songGroup := api.Group("/songs")
+	songGroup.Post("/", songHandler.CreateSong)
 	songGroup.Get("/", songHandler.FindAllSongs)
 	songGroup.Get("/:id", songHandler.FindSongByID)
-
-	songDataGroup := api.Group("/song-data")
-	songDataGroup.Get("/:song_id", songHandler.FindSongDataBySongID)
-
-	karaokeGroup := api.Group("/karaoke")
-	karaokeJobsGroup := karaokeGroup.Group("/jobs")
-	karaokeJobsGroup.Post("/callback", karaokeJobHandler.UpsertFromCallback)
-	karaokeJobsGroup.Get("/:job_id", karaokeJobHandler.GetJob)
+	songGroup.Get("/:id/lyrics", KaraokeJobHandler.GetLyrics)
+	songGroup.Get("/:id/pitch", KaraokeJobHandler.GetPitch)
+	songGroup.Get("/:id/instrumental", KaraokeJobHandler.GetInstrumental)
 }
