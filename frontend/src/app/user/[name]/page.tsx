@@ -2,6 +2,7 @@
 
 import FavoriteSong from "@/app/components/users/favoriteSong";
 import FullUser from "@/app/components/users/full-user";
+import GraphHistory from "@/app/components/users/graph-history";
 import PlayHistory from "@/app/components/users/play-history";
 
 interface BestSong {
@@ -44,14 +45,20 @@ const UserPage = async ({ params }: { params: Promise<{ name: string }> }) => {
 
     return (
     <>
-      <div className="flex-col gap-y-6 m-12">
-        <FullUser {...mockUserData} />
-        <FavoriteSong favorite={{ id: 12, song_id: 101, song_name: "Bohemian Rhapsody" }} />     
-        <PlayHistory playHistory={[
-          { id: 1, name: "Bohemian Rhapsody" },
-          { id: 2, name: "Stairway to Heaven" },
-          { id: 3, name: "Thriller" }
-        ]} />
+      <div className="min-h-screen bg-[rgb(10,25,40)] text-sky-200 px-4 sm:px-6 lg:px-12 py-8 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.18),transparent_55%)]">
+        <div className="mx-auto flex flex-col gap-y-6 w-full max-w-6xl">
+          <FullUser {...mockUserData} />
+          <GraphHistory />
+
+          <FavoriteSong favorite={{ id: 12, song_id: 101, song_name: "Bohemian Rhapsody" }} />
+          <PlayHistory
+            playHistory={[
+              { id: 1, name: "Bohemian Rhapsody" },
+              { id: 2, name: "Stairway to Heaven" },
+              { id: 3, name: "Thriller" },
+            ]}
+          />
+        </div>
       </div>
     </>
     );
