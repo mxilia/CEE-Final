@@ -18,7 +18,7 @@ func NewJWTMaker(cfg *config.Config) *JWTMaker {
 }
 
 func (maker *JWTMaker) CreateToken(id uuid.UUID, email string, duration time.Duration) (string, *UserClaims, error) {
-	claims, err := NewUserClaims(id, email, role, duration)
+	claims, err := NewUserClaims(id, email, duration)
 	if err != nil {
 		return "", nil, err
 	}

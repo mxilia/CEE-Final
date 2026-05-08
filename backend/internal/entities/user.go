@@ -19,6 +19,7 @@ type User struct {
 	Handler    string    `gorm:"type:varchar(255);uniqueKey" json:"handler"`
 	Email      string    `gorm:"type:varchar(255);uniqueIndex" json:"email"`
 	ProfileUrl string    `gorm:"type:varchar(512);default:''" json:"profile_url"`
+	TotalScore int       `gorm:"default:0;index:idx_score_desc,sort:desc" json:"total_score"`
 	CreatedAt  time.Time `gorm:"timestamptz(3)" json:"created_at"`
 }
 
