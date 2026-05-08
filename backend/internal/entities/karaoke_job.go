@@ -18,10 +18,9 @@ type KaraokeJob struct {
 	AudioPath      string         `gorm:"type:text;not null" json:"audio_path"`
 	AudioPublicURL string         `gorm:"type:text" json:"audio_public_url"`
 	YinConfig      datatypes.JSON `gorm:"type:jsonb;not null" json:"yin"`
-	FrequenciesHz  []float64      `gorm:"type:jsonb;not null" json:"frequencies_hz"`
+	FrequenciesHz  datatypes.JSON `gorm:"type:jsonb" json:"frequencies_hz"`
 	Status         string         `gorm:"type:varchar(32);not null" json:"status"`
 	Error          string         `gorm:"type:text" json:"error"`
 	CreatedAt      time.Time      `gorm:"timestamptz(3)" json:"created_at"`
 	UpdatedAt      time.Time      `gorm:"timestamptz(3)" json:"updated_at"`
 }
-

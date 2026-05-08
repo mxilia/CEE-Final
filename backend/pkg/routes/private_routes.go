@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke/handler/rest"
+	"github.com/mxilia/CEE-Final/internal/transaction"
 
 	sessionHandler "github.com/mxilia/CEE-Final/internal/session/handler/rest"
 	sessionRepository "github.com/mxilia/CEE-Final/internal/session/repository"
@@ -22,7 +23,7 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	/* === Dependencies Wiring === */
 
-	// txManager := transaction.NewGormTxManager(db)
+	txManager := transaction.NewGormTxManager(db)
 
 	sessionRepo := sessionRepository.NewGormSessionRepository(db)
 	sessionUseCase := sessionUseCase.NewSessionService(sessionRepo)
@@ -32,7 +33,7 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userHandler := userHandler.NewHttpUserHandler(userUseCase, sessionUseCase, cfg)
 
 	sessionHandler := sessionHandler.NewHttpSessionHandler(sessionUseCase, userUseCase, cfg)
-	karaokeJobHandler := karaokeHandler.NewHttpKaraokeJobHandler(db, cfg)
+	karaokeJobHandler := karaokeHandler.NewHttpKaraokeJobHandler(db, txManager, cfg)
 
 	/* === Routes === */
 

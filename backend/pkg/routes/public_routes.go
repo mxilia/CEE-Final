@@ -8,6 +8,7 @@ import (
 	songHandler "github.com/mxilia/CEE-Final/internal/song/handler/rest"
 	songRepository "github.com/mxilia/CEE-Final/internal/song/repository"
 	songUseCase "github.com/mxilia/CEE-Final/internal/song/usecase"
+	"github.com/mxilia/CEE-Final/internal/transaction"
 
 	userHandler "github.com/mxilia/CEE-Final/internal/user/handler/rest"
 	userRepository "github.com/mxilia/CEE-Final/internal/user/repository"
@@ -23,7 +24,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	/* === Dependencies Wiring === */
 
-	// txManager := transaction.NewGormTxManager(db)
+	txManager := transaction.NewGormTxManager(db)
 
 	sessionRepo := sessionRepository.NewGormSessionRepository(db)
 	sessionUseCase := sessionUseCase.NewSessionService(sessionRepo)
@@ -38,7 +39,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	songDataSvc := songUseCase.NewSongDataService(songDataRepo, songRepo)
 	songHandler := songHandler.NewHttpSongHandler(db, songSvc, songDataSvc)
 
-	karaokeJobHandler := karaokeHandler.NewHttpKaraokeJobHandler(db, cfg)
+	karaokeJobHandler := karaokeHandler.NewHttpKaraokeJobHandler(db, txManager, cfg)
 
 	/* === Routes === */
 
