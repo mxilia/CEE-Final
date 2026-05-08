@@ -2,10 +2,12 @@ package rest
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,18 +15,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/mxilia/CEE-Final/internal/entities"
+	"github.com/mxilia/CEE-Final/internal/transaction"
 	"github.com/mxilia/CEE-Final/pkg/config"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 type HttpKaraokeJobHandler struct {
-	db  *gorm.DB
-	cfg *config.Config
+	db        *gorm.DB
+	txManager transaction.TransactionManager
+	cfg       *config.Config
 }
 
-func NewHttpKaraokeJobHandler(db *gorm.DB, cfg *config.Config) *HttpKaraokeJobHandler {
-	return &HttpKaraokeJobHandler{db: db, cfg: cfg}
+func NewHttpKaraokeJobHandler(db *gorm.DB, txManager transaction.TransactionManager, cfg *config.Config) *HttpKaraokeJobHandler {
+	return &HttpKaraokeJobHandler{db: db, txManager: txManager, cfg: cfg}
 }
 
 type callbackAudio struct {
@@ -104,7 +108,11 @@ func (h *HttpKaraokeJobHandler) UpsertFromCallback(c *fiber.Ctx) error {
 	if err := c.BodyParser(&payload); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid json body")
 	}
-	if payload.JobID == "" || payload.YoutubeURL == "" || payload.Audio.Bucket == "" || payload.Audio.Path == "" {
+
+	if payload.JobID == "" ||
+		payload.YoutubeURL == "" ||
+		payload.Audio.Bucket == "" ||
+		payload.Audio.Path == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "missing required fields")
 	}
 
@@ -113,59 +121,84 @@ func (h *HttpKaraokeJobHandler) UpsertFromCallback(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid yin config")
 	}
 
-	// Update existing job created by CreateJob (keeps SongID/UserID/metadata).
-	var job entities.KaraokeJob
-	if err := h.db.First(&job, "job_id = ?", payload.JobID).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return fiber.NewError(fiber.StatusNotFound, "job not found")
-		}
+	freqBytes, err := json.Marshal(payload.FreqsHz)
+	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	job.YoutubeURL = payload.YoutubeURL
-	job.AudioBucket = payload.Audio.Bucket
-	job.AudioPath = payload.Audio.Path
-	job.AudioPublicURL = payload.Audio.PublicURL
-	job.YinConfig = datatypes.JSON(yinBytes)
-	job.FrequenciesHz = payload.FreqsHz
-	job.Status = "succeeded"
-	job.Error = ""
+	ctx := c.UserContext()
 
-	if err := h.db.Save(&job).Error; err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	}
+	err = h.txManager.Do(ctx, func(txCtx context.Context) error {
+		tx := transaction.GetTx(txCtx, h.db)
 
-	// Upsert SongData so frontend can load audio+frequencies by song_id.
-	lyricsEmpty := datatypes.JSON([]byte(`[]`))
-	var existing entities.SongData
-	err = h.db.First(&existing, "song_id = ?", job.SongID).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
-	}
-	if err == gorm.ErrRecordNotFound {
-		sd := entities.SongData{
-			SongID:         job.SongID,
-			FrequencyArray: payload.FreqsHz,
-			AudioBucket:    payload.Audio.Bucket,
-			AudioPath:      payload.Audio.Path,
-			AudioPublicURL: payload.Audio.PublicURL,
-			Lyrics:         lyricsEmpty,
+		var job entities.KaraokeJob
+		if err := tx.First(&job, "job_id = ?", payload.JobID).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return fiber.NewError(fiber.StatusNotFound, "job not found")
+			}
+			return err
 		}
-		if err := h.db.Create(&sd).Error; err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
-		}
-	} else {
-		if err := h.db.Model(&entities.SongData{}).Where("song_id = ?", job.SongID).Updates(map[string]interface{}{
-			"frequency_array":  payload.FreqsHz,
+
+		// DO NOT USE Save()
+		if err := tx.Model(&job).Updates(map[string]interface{}{
+			"youtube_url":      payload.YoutubeURL,
 			"audio_bucket":     payload.Audio.Bucket,
 			"audio_path":       payload.Audio.Path,
 			"audio_public_url": payload.Audio.PublicURL,
+			"yin_config":       datatypes.JSON(yinBytes),
+			"frequencies_hz":   datatypes.JSON(freqBytes),
+			"status":           "succeeded",
+			"error":            "",
 		}).Error; err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return err
 		}
+
+		lyricsEmpty := datatypes.JSON([]byte(`[]`))
+
+		var existing entities.SongData
+		err := tx.First(&existing, "song_id = ?", job.SongID).Error
+
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return err
+		}
+
+		if err == gorm.ErrRecordNotFound {
+			sd := entities.SongData{
+				SongID:         job.SongID,
+				FrequencyArray: datatypes.JSON(freqBytes),
+				AudioBucket:    payload.Audio.Bucket,
+				AudioPath:      payload.Audio.Path,
+				AudioPublicURL: payload.Audio.PublicURL,
+				Lyrics:         lyricsEmpty,
+			}
+
+			if err := tx.Create(&sd).Error; err != nil {
+				return err
+			}
+		} else {
+			if err := tx.Model(&entities.SongData{}).
+				Where("song_id = ?", job.SongID).
+				Updates(map[string]interface{}{
+					"frequency_array":  datatypes.JSON(freqBytes),
+					"audio_bucket":     payload.Audio.Bucket,
+					"audio_path":       payload.Audio.Path,
+					"audio_public_url": payload.Audio.PublicURL,
+				}).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
 	}
 
-	return c.JSON(fiber.Map{"ok": true, "job_id": payload.JobID})
+	return c.JSON(fiber.Map{
+		"ok":     true,
+		"job_id": payload.JobID,
+	})
 }
 
 func (h *HttpKaraokeJobHandler) GetJob(c *fiber.Ctx) error {
@@ -225,7 +258,7 @@ func (h *HttpKaraokeJobHandler) CreateJob(c *fiber.Ctx) error {
 		AudioPath:      "",
 		AudioPublicURL: "",
 		YinConfig:      emptyJSON,
-		FrequenciesHz:  []float64{},
+		FrequenciesHz:  datatypes.JSON([]byte(`[]`)),
 		Status:         "queued",
 		Error:          "",
 	}
@@ -263,6 +296,7 @@ func (h *HttpKaraokeJobHandler) CreateJob(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadGateway, "failed to call karaoke generator")
 	}
 	defer resp.Body.Close()
+	fmt.Println("Karaoke_bodyresp.StatusCode:", resp.StatusCode)
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		_ = h.db.Model(&entities.KaraokeJob{}).Where("job_id = ?", jobID).Updates(map[string]interface{}{
 			"status": "failed",
