@@ -10,7 +10,7 @@ type PitchPoint = { t: number; f: number; note: string; confidence: number }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
-export default function Karaoke({ songId }: { songId: string }) {
+export function Karaoke({ songId }: { songId: string }) {
     // Refs for non-reactive audio state
     const audioRef = useRef<HTMLAudioElement>(null)
     const rafRef = useRef<number | null>(null)
@@ -148,7 +148,7 @@ export default function Karaoke({ songId }: { songId: string }) {
             
             {/* 1. START OVERLAY */}
             {!isStarted && (
-                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl">
+                <div className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl">
                     <button 
                         onClick={startSession}
                         className="group relative px-16 py-6 bg-white text-black font-black text-2xl rounded-full transition-all hover:scale-105 hover:bg-green-400 active:scale-95"
@@ -215,7 +215,7 @@ export default function Karaoke({ songId }: { songId: string }) {
             />
 
             {/* 4. LYRICS FALLBACK DISPLAY */}
-            <div className="mt-auto mb-auto flex flex-col items-center justify-center min-h-[350px] text-center px-6">
+            <div className="mt-auto mb-auto flex flex-col items-center justify-center min-h-87.5 text-center px-6">
                 <div 
                     key={currentLyric?.start || 'fallback'} 
                     className={cn(
