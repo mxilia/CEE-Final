@@ -22,29 +22,59 @@ export default function Karaoke({ songId }: { songId: string }) {
     const [score, setScore] = useState(0)
     const [isStarted, setIsStarted] = useState(false)
     const [micActive, setMicActive] = useState(false)
+    const [isEnded, setIsEnded] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isError, setIsError] = useState(false)
 
     // Fetch Song Data
     const { data: lyricsData } = useSWR(`${env.API_URL}/songs/${songId}/lyrics`, fetcher)
     const { data: pitchData, isLoading } = useSWR<PitchPoint[]>(`${env.API_URL}/songs/${songId}/pitch`, fetcher)
 
-    console.log("Lyrics Data:", lyricsData)
+    const submitScore = async (finalScore: number) => {
+        try {
+            setIsSubmitting(true)
+            const response = await fetch(`${env.API_URL}/play-history`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    total_score: finalScore,
+                    song_id: Number(songId),
+                }),
+                credentials: "include",
+            })
+            setIsSubmitting(false)
+            if (!response.ok) {
+                setIsError(true)
+                console.error("Failed to submit score:", await response.text())
+                return
+            }
+            console.log("Final score submitted:", finalScore)
+        } catch (err) {
+            setIsSubmitting(false)
+            setIsError(true)
+            console.error("Failed to submit score:", err)
+        }
+    }
 
     // 1. Initialize Audio Worklet and Microphone
     const startSession = async () => {
         try {
             const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
-            
+
             // Resume context if suspended (common in Chrome/Safari)
             if (ctx.state === 'suspended') await ctx.resume()
 
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                audio: { 
-                    echoCancellation: true, 
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
                     noiseSuppression: true,
-                    autoGainControl: true 
-                } 
+                    autoGainControl: true
+                }
             })
-            
+
             // Load the processor from /public/worklets/pitch-processor.js
             await ctx.audioWorklet.addModule("/worklets/pitch-processor.js")
 
@@ -58,11 +88,11 @@ export default function Karaoke({ songId }: { songId: string }) {
                     const midi = 12 * Math.log2(pitch / 440) + 69
                     setUserPitch({ f: pitch, m: midi })
                     setMicActive(true)
-                    
+
                     // Real-time Scoring logic
                     const curTime = audioRef.current?.currentTime || 0
                     const target = pitchData?.find(p => Math.abs(p.t - curTime) < 0.1)
-                    
+
                     if (target && target.f > 0) {
                         const targetMidi = 12 * Math.log2(target.f / 440) + 69
                         const diff = Math.abs(midi - targetMidi)
@@ -115,6 +145,11 @@ export default function Karaoke({ songId }: { songId: string }) {
             if (rafRef.current) cancelAnimationFrame(rafRef.current)
         })
 
+        audio.addEventListener("ended", () => {
+            setIsEnded(true)
+            submitScore(score)
+        });
+
         return () => {
             if (rafRef.current) cancelAnimationFrame(rafRef.current)
         }
@@ -145,11 +180,49 @@ export default function Karaoke({ songId }: { songId: string }) {
 
     return (
         <div className="min-h-screen bg-black text-white p-6 flex flex-col font-sans select-none overflow-hidden">
-            
+            {isEnded && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+                    <div className="bg-zinc-900 border border-white/10 p-8 rounded-[2.5rem] w-full max-w-md text-center shadow-2xl animate-in zoom-in duration-300">
+                        <div className="space-y-6">
+                            <div>
+                                <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">Performance Result</p>
+                                <h2 className="text-7xl font-black text-green-400 tabular-nums">
+                                    {score.toLocaleString()}
+                                </h2>
+                            </div>
+
+                            <div className="py-4 px-6 bg-white/5 rounded-2xl border border-white/5">
+                                <p className="text-sm text-zinc-400 italic">
+                                {
+                                    isSubmitting ? "Submitting score... (Don't close)" : isError ? "Failed to submit score." :
+                                    "The score has been recorded to your profile."
+                                }
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all"
+                                >
+                                    RETRY
+                                </button>
+                                <button
+                                    onClick={() => window.location.href = '/home'} // Change to your lobby path
+                                    className="py-4 bg-green-500 hover:bg-green-400 text-black font-black rounded-2xl transition-all"
+                                >
+                                    CONTINUE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* 1. START OVERLAY */}
             {!isStarted && (
                 <div className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl">
-                    <button 
+                    <button
                         onClick={startSession}
                         className="group relative px-16 py-6 bg-white text-black font-black text-2xl rounded-full transition-all hover:scale-105 hover:bg-green-400 active:scale-95"
                     >
@@ -180,25 +253,25 @@ export default function Karaoke({ songId }: { songId: string }) {
             <div className="relative w-full h-64 bg-zinc-900/10 rounded-[2.5rem] border border-white/5 overflow-hidden shadow-inner ring-1 ring-white/5">
                 {/* Vertical Playhead Guide */}
                 <div className="absolute left-[20%] inset-y-0 w-px bg-white/10 z-10" />
-                
+
                 <div className="relative h-full w-full">
                     {/* Target Pitches (The "Notes" to hit) */}
                     {pitchData?.filter(p => p.t >= time - 2 && p.t <= time + 6).map((p, i) => {
                         const midi = 12 * Math.log2(p.f / 440) + 69
                         const x = (p.t - time) * 250 + (window.innerWidth * 0.20)
                         return (
-                            <div 
-                                key={i} 
-                                className={cn("absolute w-3 h-3 rounded-full transition-opacity duration-300", 
+                            <div
+                                key={i}
+                                className={cn("absolute w-3 h-3 rounded-full transition-opacity duration-300",
                                     p.t >= time ? "opacity-20 bg-green-500" : "bg-zinc-700")}
-                                style={{ left: x, top: getMidiY(midi) }} 
+                                style={{ left: x, top: getMidiY(midi) }}
                             />
                         )
                     })}
 
                     {/* Live User Input Marker */}
                     {userPitch && (
-                        <div 
+                        <div
                             className="absolute left-[20%] w-8 h-8 -ml-4 -mt-4 bg-white rounded-full shadow-[0_0_40px_white,0_0_15px_#22c55e] z-30 transition-all duration-75 border-[3px] border-green-500"
                             style={{ top: getMidiY(userPitch.m) }}
                         />
@@ -207,34 +280,34 @@ export default function Karaoke({ songId }: { songId: string }) {
             </div>
 
             {/* Hidden Audio Element */}
-            <audio 
-                ref={audioRef} 
-                preload="auto" 
+            <audio
+                ref={audioRef}
+                preload="auto"
                 crossOrigin="anonymous"
-                src={`${env.API_URL}/songs/${songId}/instrumental`} 
+                src={`${env.API_URL}/songs/${songId}/instrumental`}
             />
 
             {/* 4. LYRICS FALLBACK DISPLAY */}
             <div className="mt-auto mb-auto flex flex-col items-center justify-center min-h-87.5 text-center px-6">
-                <div 
-                    key={currentLyric?.start || 'fallback'} 
+                <div
+                    key={currentLyric?.start || 'fallback'}
                     className={cn(
                         "text-3xl md:text-5xl font-black uppercase italic tracking-tighter leading-[0.9] transition-all duration-500",
-                        currentLyric 
-                            ? "text-white opacity-100 scale-100 blur-0" 
+                        currentLyric
+                            ? "text-white opacity-100 scale-100 blur-0"
                             : "text-zinc-800 opacity-40 scale-95 blur-[2px]"
                     )}
                 >
                     {currentLyric ? currentLyric.text : "audio sound"}
                 </div>
-                
+
                 {/* Visual Progress Bar for current line */}
                 {currentLyric && (
                     <div className="w-32 h-1 bg-zinc-800 mt-8 rounded-full overflow-hidden">
-                        <div 
+                        <div
                             className="h-full bg-green-500 transition-all duration-100"
-                            style={{ 
-                                width: `${(((time - currentLyric.start) / (currentLyric.end - currentLyric.start)) * 100).toFixed(0)}%` 
+                            style={{
+                                width: `${(((time - currentLyric.start) / (currentLyric.end - currentLyric.start)) * 100).toFixed(0)}%`
                             }}
                         />
                     </div>
