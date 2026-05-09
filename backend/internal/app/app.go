@@ -32,8 +32,9 @@ func setupDependencies(env string) (*gorm.DB, *config.Config, error) {
 		&entities.User{},
 		&entities.Session{},
 		&entities.Song{},
-		&entities.SongData{},
-		&entities.KaraokeJob{},
+		&entities.FavoriteSong{},
+		&entities.PlayHistory{},
+		&entities.RankHistory{},
 	); err != nil {
 		return nil, nil, err
 	}

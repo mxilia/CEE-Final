@@ -7,6 +7,7 @@ import (
 	songHandler "github.com/mxilia/CEE-Final/internal/song/handler/rest"
 	songRepository "github.com/mxilia/CEE-Final/internal/song/repository"
 	songUseCase "github.com/mxilia/CEE-Final/internal/song/usecase"
+	"github.com/mxilia/CEE-Final/internal/transaction"
 
 	userHandler "github.com/mxilia/CEE-Final/internal/user/handler/rest"
 	userRepository "github.com/mxilia/CEE-Final/internal/user/repository"
@@ -15,7 +16,9 @@ import (
 	sessionRepository "github.com/mxilia/CEE-Final/internal/session/repository"
 	sessionUseCase "github.com/mxilia/CEE-Final/internal/session/usecase"
 
-	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke/handler/rest"
+	favoriteSongHandler "github.com/mxilia/CEE-Final/internal/favorite_song"
+	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke"
+	playHistoryHandler "github.com/mxilia/CEE-Final/internal/play_history"
 
 	"github.com/mxilia/CEE-Final/pkg/config"
 )
@@ -24,7 +27,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	/* === Dependencies Wiring === */
 
-	// txManager := transaction.NewGormTxManager(db)
+	txManager := transaction.NewGormTxManager(db)
 
 	sessionRepo := sessionRepository.NewGormSessionRepository(db)
 	sessionUseCase := sessionUseCase.NewSessionService(sessionRepo)
@@ -38,6 +41,8 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	songHandler := songHandler.NewHttpSongHandler(db, songUseCase)
 
 	KaraokeJobHandler := karaokeHandler.NewHttpKaraokeHandler()
+	playHistoryHandler := playHistoryHandler.NewHttpPlayHistoryHandler(db, userUseCase, txManager)
+	favoriteSongHandler := favoriteSongHandler.NewHttpFavoriteSongHandler(db, txManager)
 
 	/* === Routes === */
 
@@ -64,4 +69,10 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	songGroup.Get("/:id/lyrics", KaraokeJobHandler.GetLyrics)
 	songGroup.Get("/:id/pitch", KaraokeJobHandler.GetPitch)
 	songGroup.Get("/:id/instrumental", KaraokeJobHandler.GetInstrumental)
+
+	playHistoryGroup := api.Group("/play-history")
+	playHistoryGroup.Get("/user/:id", playHistoryHandler.GetPlayHistoryByUserID)
+
+	favoriteSongGroup := api.Group("/favorite-songs")
+	favoriteSongGroup.Get("/user/:id", favoriteSongHandler.GetFavoriteSongsByUserID)
 }

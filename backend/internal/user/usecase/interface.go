@@ -11,6 +11,7 @@ type UserUseCase interface {
 	FindUserByID(id uuid.UUID) (*entities.User, error)
 	FindUserByHandler(handler string) (*entities.User, error)
 	FindUserByEmail(email string) (*entities.User, error)
+	UpdateUserTotalScore(userID uuid.UUID, score int) error
 	PatchUser(id uuid.UUID, user *entities.User) error
 	DeleteUser(id uuid.UUID) error
 }

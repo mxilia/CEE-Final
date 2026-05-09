@@ -110,3 +110,12 @@ func (s *UserService) DeleteUser(id uuid.UUID) error {
 	}
 	return nil
 }
+
+func (s *UserService) UpdateUserTotalScore(userID uuid.UUID, score int) error {
+	user, err := s.FindUserByID(userID)
+	if err != nil {
+		return err
+	}
+	user.TotalScore += score
+	return s.repo.Patch(userID, user)
+}
