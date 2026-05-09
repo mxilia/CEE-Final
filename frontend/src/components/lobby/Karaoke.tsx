@@ -15,6 +15,7 @@ export default function Karaoke({ songId }: { songId: string }) {
     const audioRef = useRef<HTMLAudioElement>(null)
     const rafRef = useRef<number | null>(null)
     const audioContextRef = useRef<AudioContext | null>(null)
+    const scoreRef = useRef(0)
 
     // UI & Game State
     const [time, setTime] = useState(0)
@@ -32,6 +33,7 @@ export default function Karaoke({ songId }: { songId: string }) {
 
     const submitScore = async (finalScore: number) => {
         try {
+            console.log("Submitting score:", finalScore, "original score:", score)
             setIsSubmitting(true)
             const response = await fetch(`${env.API_URL}/play-history`, {
                 method: 'POST',
@@ -99,6 +101,7 @@ export default function Karaoke({ songId }: { songId: string }) {
                         // Reward if within 1.5 semitones
                         if (diff < 1.5) {
                             setScore(prev => prev + Math.floor((1.5 - diff) * 10))
+                            scoreRef.current += Math.floor((1.5 - diff) * 10)
                         }
                     }
                 } else {
@@ -147,7 +150,8 @@ export default function Karaoke({ songId }: { songId: string }) {
 
         audio.addEventListener("ended", () => {
             setIsEnded(true)
-            submitScore(score)
+            console.log("FINAL SCORE:", scoreRef.current)
+            submitScore(scoreRef.current)
         });
 
         return () => {
