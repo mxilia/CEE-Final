@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"strings"
+
 	"github.com/mxilia/CEE-Final/internal/entities"
 	"gorm.io/gorm"
 )
@@ -20,17 +22,28 @@ func (r *GormSongRepository) Save(song *entities.Song) error {
 	return nil
 }
 
-func (r *GormSongRepository) FindAll(offset int, limit int) ([]*entities.Song, error) {
+func (r *GormSongRepository) FindAll(title string, offset int, limit int) ([]*entities.Song, error) {
+
 	var songsValue []entities.Song
-	if err := r.db.Limit(limit).Offset(offset).Order("created_at DESC").Find(&songsValue).Error; err != nil {
+	query := r.db.
+		Limit(limit).
+		Offset(offset).
+		Order("created_at DESC")
+	if title != "" {
+		query = query.Where(
+			"LOWER(title) LIKE ?",
+			"%"+strings.ToLower(title)+"%",
+		)
+	}
+	if err := query.Find(&songsValue).Error; err != nil {
 		return nil, err
 	}
-
 	songs := make([]*entities.Song, len(songsValue))
 	for i := range songsValue {
 		songs[i] = &songsValue[i]
 	}
 	return songs, nil
+
 }
 
 func (r *GormSongRepository) FindByID(id uint) (*entities.Song, error) {

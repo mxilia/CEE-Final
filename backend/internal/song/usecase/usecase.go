@@ -21,13 +21,13 @@ func (s *SongService) CreateSong(song *entities.Song) error {
 	return s.songRepo.Save(song)
 }
 
-func (s *SongService) FindAllSongs(page int, limit int) ([]*entities.Song, int64, error) {
+func (s *SongService) FindAllSongs(title string, page int, limit int) ([]*entities.Song, int64, error) {
 	if page < 1 {
 		page = 1
 	}
 
 	offset := (page - 1) * limit
-	songs, err := s.songRepo.FindAll(offset, limit)
+	songs, err := s.songRepo.FindAll(title, offset, limit)
 	if err != nil {
 		return nil, -1, err
 	}

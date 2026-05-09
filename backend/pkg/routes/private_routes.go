@@ -57,4 +57,5 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	favoriteSongGroup := api.Group("/favorite-songs")
 	favoriteSongGroup.Post("/", favoriteSongHandler.CreateFavoriteSong)
+	favoriteSongGroup.Get("/is-favorite/song/:id", favoriteSongHandler.GetIsFavoriteSongByUser)
 }
