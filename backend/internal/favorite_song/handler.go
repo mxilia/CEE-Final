@@ -74,7 +74,7 @@ func (h *HttpFavoriteSongHandler) GetFavoriteSongsByUserID(c *fiber.Ctx) error {
 
 	var favoriteSongs []entities.FavoriteSong
 	offset := (page - 1) * limit
-	if err := h.db.Where("user_id = ?", userID).Order("created_at DESC").Limit(limit).Offset(offset).Find(&favoriteSongs).Error; err != nil {
+	if err := h.db.Where("user_id = ?", userID).Order("created_at DESC").Preload("Song").Limit(limit).Offset(offset).Find(&favoriteSongs).Error; err != nil {
 		return responses.Error(c, appError.ErrInternalServer)
 	}
 
@@ -86,4 +86,21 @@ func (h *HttpFavoriteSongHandler) GetFavoriteSongsByUserID(c *fiber.Ctx) error {
 			"totalPages": int(math.Ceil(float64(totalFavoriteSongs) / float64(limit))),
 		},
 	})
+}
+
+func (h *HttpFavoriteSongHandler) GetIsFavoriteSongByUser(c *fiber.Ctx) error {
+	userID, ok := c.Locals("user_id").(uuid.UUID)
+	if !ok {
+		return responses.Error(c, appError.ErrInvalidData)
+	}
+	songID := c.Params("id")
+
+	var favoriteSong entities.FavoriteSong
+	if err := h.db.Where("user_id = ? AND song_id = ?", userID, songID).First(&favoriteSong).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(fiber.Map{"is_favorite": false})
+		}
+		return responses.Error(c, appError.ErrInternalServer)
+	}
+	return c.JSON(fiber.Map{"is_favorite": true})
 }
