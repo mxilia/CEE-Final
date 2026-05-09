@@ -1,0 +1,250 @@
+{
+  "segments": [
+    {
+      "start": 30.0,
+      "end": 33.0,
+      "text": "\u0e17\u0e35\u0e48\u0e2d\u0e2d\u0e01\u0e01\u0e2d\u0e14\u0e09\u0e31\u0e19\u0e44\u0e2b\u0e27",
+      "confidence": 0.85
+    },
+    {
+      "start": 33.0,
+      "end": 36.0,
+      "text": "\u0e17\u0e35\u0e48\u0e01\u0e25\u0e38\u0e48\u0e21\u0e40\u0e21\u0e37\u0e48\u0e2d\u0e09\u0e31\u0e19\u0e40\u0e14\u0e34\u0e19\u0e44\u0e1b",
+      "confidence": 0.85
+    },
+    {
+      "start": 36.0,
+      "end": 39.0,
+      "text": "\u0e43\u0e19\u0e2b\u0e31\u0e27\u0e43\u0e08\u0e02\u0e2d\u0e07\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 39.0,
+      "end": 42.0,
+      "text": "\u0e43\u0e19\u0e17\u0e38\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07\u0e23\u0e32\u0e27 \u0e44\u0e21\u0e48\u0e40\u0e1b\u0e47\u0e19\u0e44\u0e23\u0e2b\u0e23\u0e37\u0e2d\u0e14\u0e35",
+      "confidence": 0.85
+    },
+    {
+      "start": 42.0,
+      "end": 46.0,
+      "text": "\u0e22\u0e31\u0e07\u0e21\u0e35\u0e20\u0e32\u0e1e\u0e40\u0e18\u0e2d \u0e43\u0e19\u0e17\u0e38\u0e01\u0e27\u0e34\u0e19\u0e32\u0e17\u0e35",
+      "confidence": 0.85
+    },
+    {
+      "start": 46.0,
+      "end": 51.0,
+      "text": "\u0e19\u0e32\u0e19\u0e40\u0e17\u0e48\u0e32\u0e44\u0e2b\u0e23\u0e48 \u0e44\u0e21\u0e48\u0e40\u0e04\u0e22\u0e25\u0e49\u0e2d\u0e1e\u0e25\u0e37\u0e19\u0e21\u0e32\u0e08\u0e19\u0e27\u0e31\u0e19\u0e19\u0e35\u0e49",
+      "confidence": 0.85
+    },
+    {
+      "start": 54.0,
+      "end": 57.0,
+      "text": "\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e2b\u0e31\u0e27\u0e43\u0e08",
+      "confidence": 0.85
+    },
+    {
+      "start": 57.0,
+      "end": 60.0,
+      "text": "\u0e41\u0e01\u0e49\u0e1b\u0e44\u0e27\u0e49\u0e17\u0e38\u0e01\u0e20\u0e32\u0e1e\u0e15\u0e48\u0e32\u0e07",
+      "confidence": 0.85
+    },
+    {
+      "start": 60.0,
+      "end": 63.0,
+      "text": "\u0e04\u0e27\u0e32\u0e21\u0e2d\u0e14\u0e07\u0e32\u0e21\u0e40\u0e18\u0e2d\u0e44\u0e2b\u0e19",
+      "confidence": 0.85
+    },
+    {
+      "start": 63.0,
+      "end": 67.0,
+      "text": "\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e15\u0e23\u0e07\u0e19\u0e35\u0e49 \u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e01\u0e31\u0e1a\u0e09\u0e31\u0e19\u0e40\u0e2b\u0e21\u0e37\u0e2d\u0e19\u0e40\u0e04\u0e22",
+      "confidence": 0.85
+    },
+    {
+      "start": 67.0,
+      "end": 70.0,
+      "text": "\u0e44\u0e14\u0e49\u0e2d\u0e22\u0e39\u0e48\u0e02\u0e49\u0e32\u0e07 \u0e46",
+      "confidence": 0.85
+    },
+    {
+      "start": 70.0,
+      "end": 73.0,
+      "text": "\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e0a\u0e35\u0e27\u0e34\u0e15\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 73.0,
+      "end": 78.0,
+      "text": "\u0e09\u0e31\u0e19\u0e21\u0e35\u0e04\u0e27\u0e32\u0e21\u0e2d\u0e23\u0e48\u0e2d\u0e22\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e01\u0e31\u0e19",
+      "confidence": 0.85
+    },
+    {
+      "start": 78.0,
+      "end": 83.0,
+      "text": "\u0e08\u0e30\u0e22\u0e31\u0e07\u0e40\u0e1b\u0e47\u0e19\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e27\u0e22\u0e07\u0e32\u0e21\u0e02\u0e2d\u0e07\u0e09\u0e31\u0e19\u0e40\u0e2a\u0e21\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 88.0,
+      "end": 92.0,
+      "text": "\u0e02\u0e2d\u0e07\u0e21\u0e35\u0e40\u0e1e\u0e34\u0e48\u0e07\u0e04\u0e33\u0e14\u0e33\u0e40\u0e14\u0e34\u0e21",
+      "confidence": 0.85
+    },
+    {
+      "start": 92.0,
+      "end": 96.0,
+      "text": "\u0e2d\u0e22\u0e32\u0e01\u0e43\u0e2b\u0e49\u0e40\u0e18\u0e2d\u0e44\u0e14\u0e49\u0e1f\u0e31\u0e07",
+      "confidence": 0.85
+    },
+    {
+      "start": 96.0,
+      "end": 99.0,
+      "text": "\u0e43\u0e2b\u0e49\u0e40\u0e18\u0e2d\u0e44\u0e14\u0e49\u0e23\u0e39\u0e49\u0e09\u0e31\u0e19\u0e01\u0e31\u0e19",
+      "confidence": 0.85
+    },
+    {
+      "start": 99.0,
+      "end": 102.0,
+      "text": "\u0e27\u0e48\u0e32\u0e09\u0e31\u0e19\u0e23\u0e31\u0e01\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 102.0,
+      "end": 105.0,
+      "text": "\u0e43\u0e19\u0e17\u0e38\u0e01\u0e40\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e23\u0e32\u0e27 \u0e44\u0e21\u0e48\u0e40\u0e1b\u0e47\u0e19\u0e44\u0e23\u0e2b\u0e23\u0e37\u0e2d\u0e14\u0e35",
+      "confidence": 0.85
+    },
+    {
+      "start": 105.0,
+      "end": 109.0,
+      "text": "\u0e22\u0e31\u0e07\u0e21\u0e35\u0e20\u0e32\u0e1e\u0e40\u0e18\u0e2d \u0e43\u0e19\u0e17\u0e38\u0e01\u0e27\u0e34\u0e19\u0e32\u0e17\u0e35",
+      "confidence": 0.85
+    },
+    {
+      "start": 109.0,
+      "end": 114.0,
+      "text": "\u0e19\u0e32\u0e19\u0e40\u0e17\u0e48\u0e32\u0e44\u0e2b\u0e23\u0e48 \u0e44\u0e21\u0e48\u0e40\u0e04\u0e22\u0e25\u0e49\u0e2d\u0e1e\u0e25\u0e37\u0e19\u0e21\u0e32\u0e08\u0e19\u0e27\u0e31\u0e19\u0e19\u0e35\u0e49",
+      "confidence": 0.85
+    },
+    {
+      "start": 114.0,
+      "end": 118.0,
+      "text": "\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e2b\u0e31\u0e27\u0e43\u0e08",
+      "confidence": 0.85
+    },
+    {
+      "start": 118.0,
+      "end": 121.0,
+      "text": "\u0e41\u0e01\u0e49\u0e1b\u0e25\u0e48\u0e2d\u0e22\u0e17\u0e38\u0e01\u0e20\u0e32\u0e1e\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 121.0,
+      "end": 125.0,
+      "text": "\u0e04\u0e27\u0e32\u0e21\u0e2d\u0e14\u0e07\u0e32\u0e21\u0e40\u0e18\u0e2d\u0e44\u0e21\u0e48\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e15\u0e23\u0e07\u0e19\u0e35\u0e49",
+      "confidence": 0.85
+    },
+    {
+      "start": 125.0,
+      "end": 128.0,
+      "text": "\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e01\u0e31\u0e1a\u0e09\u0e31\u0e19\u0e40\u0e2b\u0e21\u0e37\u0e2d\u0e19\u0e40\u0e04\u0e22",
+      "confidence": 0.85
+    },
+    {
+      "start": 128.0,
+      "end": 131.0,
+      "text": "\u0e44\u0e14\u0e49\u0e2d\u0e22\u0e39\u0e48\u0e02\u0e49\u0e32\u0e07 \u0e46",
+      "confidence": 0.85
+    },
+    {
+      "start": 131.0,
+      "end": 134.0,
+      "text": "\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e0a\u0e35\u0e27\u0e34\u0e15\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 134.0,
+      "end": 139.0,
+      "text": "\u0e09\u0e31\u0e19\u0e21\u0e35\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e27\u0e22\u0e07\u0e32\u0e21\u0e02\u0e2d\u0e07\u0e09\u0e31\u0e19",
+      "confidence": 0.85
+    },
+    {
+      "start": 140.0,
+      "end": 143.0,
+      "text": "\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e0a\u0e35\u0e27\u0e34\u0e15\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 143.0,
+      "end": 148.0,
+      "text": "\u0e09\u0e31\u0e19\u0e44\u0e21\u0e48\u0e04\u0e27\u0e32\u0e21\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e01\u0e31\u0e19",
+      "confidence": 0.85
+    },
+    {
+      "start": 148.0,
+      "end": 153.0,
+      "text": "\u0e41\u0e15\u0e48\u0e22\u0e31\u0e07\u0e40\u0e1b\u0e47\u0e19\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e27\u0e22\u0e07\u0e32\u0e21\u0e02\u0e2d\u0e07\u0e09\u0e31\u0e19\u0e40\u0e2a\u0e21\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 153.0,
+      "end": 159.0,
+      "text": "\u0e2d\u0e48\u0e32...",
+      "confidence": 0.85
+    },
+    {
+      "start": 166.0,
+      "end": 169.0,
+      "text": "\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e2b\u0e31\u0e27\u0e43\u0e08",
+      "confidence": 0.85
+    },
+    {
+      "start": 169.0,
+      "end": 172.0,
+      "text": "\u0e41\u0e01\u0e49\u0e1b\u0e25\u0e48\u0e2d\u0e22\u0e17\u0e38\u0e01\u0e20\u0e32\u0e1e\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 172.0,
+      "end": 176.0,
+      "text": "\u0e04\u0e27\u0e32\u0e21\u0e2d\u0e14\u0e07\u0e32\u0e21\u0e40\u0e18\u0e2d\u0e44\u0e21\u0e48\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e15\u0e23\u0e07\u0e19\u0e35\u0e49",
+      "confidence": 0.85
+    },
+    {
+      "start": 176.0,
+      "end": 179.0,
+      "text": "\u0e22\u0e31\u0e07\u0e2d\u0e22\u0e39\u0e48\u0e01\u0e31\u0e1a\u0e09\u0e31\u0e19\u0e40\u0e2b\u0e21\u0e37\u0e2d\u0e19\u0e40\u0e04\u0e22",
+      "confidence": 0.85
+    },
+    {
+      "start": 179.0,
+      "end": 182.0,
+      "text": "\u0e44\u0e14\u0e49\u0e2d\u0e22\u0e39\u0e48\u0e02\u0e49\u0e32\u0e07 \u0e46",
+      "confidence": 0.85
+    },
+    {
+      "start": 182.0,
+      "end": 185.0,
+      "text": "\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e0a\u0e35\u0e27\u0e34\u0e15\u0e40\u0e18\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 185.0,
+      "end": 190.0,
+      "text": "\u0e09\u0e31\u0e19\u0e44\u0e21\u0e48\u0e04\u0e27\u0e32\u0e21\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e01\u0e31\u0e19",
+      "confidence": 0.85
+    },
+    {
+      "start": 190.0,
+      "end": 196.0,
+      "text": "\u0e41\u0e15\u0e48\u0e22\u0e31\u0e07\u0e40\u0e1b\u0e47\u0e19\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e27\u0e22\u0e07\u0e32\u0e21\u0e02\u0e2d\u0e07\u0e09\u0e31\u0e19\u0e40\u0e2a\u0e21\u0e2d",
+      "confidence": 0.85
+    },
+    {
+      "start": 204.0,
+      "end": 209.0,
+      "text": "\u0e16\u0e49\u0e32\u0e08\u0e30\u0e40\u0e1b\u0e47\u0e19\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e27\u0e22\u0e07\u0e32\u0e21\u0e02\u0e2d\u0e07\u0e09\u0e31\u0e19\u0e40\u0e2a\u0e21\u0e2d",
+      "confidence": 0.85
+    }
+  ]
+}

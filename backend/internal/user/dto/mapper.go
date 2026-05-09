@@ -8,8 +8,9 @@ func ToUserResponse(user *entities.User) *UserResponse {
 	return &UserResponse{
 		ID:      user.ID,
 		Handler: user.Handler,
-		// Email:       user.Email,
+		// Email:      user.Email,
 		ProfileUrl: user.ProfileUrl,
+		TotalScore: user.TotalScore,
 		CreatedAt:  user.CreatedAt,
 	}
 }
