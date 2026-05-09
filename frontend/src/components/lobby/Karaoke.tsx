@@ -10,7 +10,7 @@ type PitchPoint = { t: number; f: number; note: string; confidence: number }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
-export function Karaoke({ songId }: { songId: string }) {
+export default function Karaoke({ songId }: { songId: string }) {
     // Refs for non-reactive audio state
     const audioRef = useRef<HTMLAudioElement>(null)
     const rafRef = useRef<number | null>(null)
@@ -121,7 +121,7 @@ export function Karaoke({ songId }: { songId: string }) {
     }, [isLoading])
 
     // 3. Logic to determine current lyric
-    const currentLyric = useMemo(() => {
+    const currentLyric: Segment | null = useMemo(() => {
         if (!lyricsData?.segments) return null
         return lyricsData.segments.find((s: Segment) => time >= s.start && time <= s.end)
     }, [lyricsData, time])
@@ -190,7 +190,7 @@ export function Karaoke({ songId }: { songId: string }) {
                             <div 
                                 key={i} 
                                 className={cn("absolute w-3 h-3 rounded-full transition-opacity duration-300", 
-                                    p.t < time ? "opacity-20 bg-green-500" : "bg-zinc-700")}
+                                    p.t >= time ? "opacity-20 bg-green-500" : "bg-zinc-700")}
                                 style={{ left: x, top: getMidiY(midi) }} 
                             />
                         )
@@ -219,10 +219,10 @@ export function Karaoke({ songId }: { songId: string }) {
                 <div 
                     key={currentLyric?.start || 'fallback'} 
                     className={cn(
-                        "text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-[0.9] transition-all duration-500",
+                        "text-3xl md:text-5xl font-black uppercase italic tracking-tighter leading-[0.9] transition-all duration-500",
                         currentLyric 
                             ? "text-white opacity-100 scale-100 blur-0" 
-                            : "text-zinc-900 opacity-40 scale-95 blur-[2px]"
+                            : "text-zinc-800 opacity-40 scale-95 blur-[2px]"
                     )}
                 >
                     {currentLyric ? currentLyric.text : "audio sound"}
@@ -234,7 +234,7 @@ export function Karaoke({ songId }: { songId: string }) {
                         <div 
                             className="h-full bg-green-500 transition-all duration-100"
                             style={{ 
-                                width: `${((time - currentLyric.start) / (currentLyric.end - currentLyric.start)) * 100}%` 
+                                width: `${(((time - currentLyric.start) / (currentLyric.end - currentLyric.start)) * 100).toFixed(0)}%` 
                             }}
                         />
                     </div>

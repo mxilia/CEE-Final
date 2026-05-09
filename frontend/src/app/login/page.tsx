@@ -1,7 +1,7 @@
 // I want to sign in with google I want a button that redirect to goole
 
 // app/login/page.tsx
-import RedirectButton from '../../components/login/RedirectButton';
+import RedirectButton from '@/src/components/login/redirect-button';
 
 export default function LoginPage() {
   return (
