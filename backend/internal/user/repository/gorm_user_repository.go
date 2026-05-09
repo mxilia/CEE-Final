@@ -23,7 +23,7 @@ func (r *GormUserRepository) Save(user *entities.User) error {
 
 func (r *GormUserRepository) FindAll(offset int, limit int) ([]*entities.User, error) {
 	var usersValue []entities.User
-	if err := r.db.Limit(limit).Offset(offset).Find(&usersValue).Error; err != nil {
+	if err := r.db.Limit(limit).Offset(offset).Order("total_score DESC").Find(&usersValue).Error; err != nil {
 		return nil, err
 	}
 

@@ -11,6 +11,6 @@ type UserResponse struct {
 	Handler    string    `json:"handler"`
 	Email      string    `json:"email"`
 	ProfileUrl string    `json:"profile_url"`
-
-	CreatedAt time.Time `json:"created_at"`
+	TotalScore int       `json:"total_score"`
+	CreatedAt  time.Time `json:"created_at"`
 }
