@@ -2,6 +2,7 @@
 
 import { env } from '@/src/config/env'
 import useSWR from 'swr'
+import { SongBox } from './song-box'
 
 export default function SongList() {
     const { data, error, isLoading } = useSWR(
@@ -22,9 +23,7 @@ export default function SongList() {
         <div className="flex flex-col gap-2">
             <h2 className="text-xl font-bold">Song List</h2>
             {songs?.map((song: { id: number; name: string }) => (
-                <p key={song.id} className="text-lg text-gray-300">
-                    {song.name}
-                </p>
+                <SongBox key={song.id} song={song} />
             ))}
             {songs.length === 0 && (
                 <p className="text-lg text-gray-300">No songs available</p>
