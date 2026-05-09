@@ -11,6 +11,10 @@ import (
 	userRepository "github.com/mxilia/CEE-Final/internal/user/repository"
 	userUseCase "github.com/mxilia/CEE-Final/internal/user/usecase"
 
+	favoriteSongHandler "github.com/mxilia/CEE-Final/internal/favorite_song"
+	playHistoryHandler "github.com/mxilia/CEE-Final/internal/play_history"
+
+	"github.com/mxilia/CEE-Final/internal/transaction"
 	"github.com/mxilia/CEE-Final/pkg/config"
 	"github.com/mxilia/CEE-Final/pkg/middleware"
 	"gorm.io/gorm"
@@ -20,7 +24,7 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	/* === Dependencies Wiring === */
 
-	// txManager := transaction.NewGormTxManager(db)
+	txManager := transaction.NewGormTxManager(db)
 
 	sessionRepo := sessionRepository.NewGormSessionRepository(db)
 	sessionUseCase := sessionUseCase.NewSessionService(sessionRepo)
@@ -30,6 +34,8 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userHandler := userHandler.NewHttpUserHandler(userUseCase, sessionUseCase, cfg)
 
 	sessionHandler := sessionHandler.NewHttpSessionHandler(sessionUseCase, userUseCase, cfg)
+	playHistoryHandler := playHistoryHandler.NewHttpPlayHistoryHandler(db, userUseCase, txManager)
+	favoriteSongHandler := favoriteSongHandler.NewHttpFavoriteSongHandler(db, txManager)
 
 	/* === Routes === */
 
@@ -39,19 +45,16 @@ func RegisterPrivateRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	authGroup := api.Group("/auth")
 
-	authGroup.Post(
-		"/logout",
-		sessionHandler.Logout,
-	)
+	authGroup.Post("/logout", sessionHandler.Logout)
 
 	userGroup := api.Group("/users")
 
-	userGroup.Patch(
-		"/:id",
-		userHandler.PatchUser,
-	)
-	userGroup.Delete(
-		"/:id",
-		userHandler.DeleteUser,
-	)
+	userGroup.Patch("/:id", userHandler.PatchUser)
+	userGroup.Delete("/:id", userHandler.DeleteUser)
+
+	playHistoryGroup := api.Group("/play-history")
+	playHistoryGroup.Post("/", playHistoryHandler.CreatePlayHistory)
+
+	favoriteSongGroup := api.Group("/favorite-songs")
+	favoriteSongGroup.Post("/", favoriteSongHandler.CreateFavoriteSong)
 }
