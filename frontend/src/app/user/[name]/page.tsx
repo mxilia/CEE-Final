@@ -1,9 +1,9 @@
 
 
-import FavoriteSong from "@/app/components/users/favoriteSong";
-import FullUser from "@/app/components/users/full-user";
-import GraphHistory from "@/app/components/users/graph-history";
-import PlayHistory from "@/app/components/users/play-history";
+import FavoriteSong from "@/src/components/users/favorite-song";
+import FullUser from "@/src/components/users/full-user";
+import GraphHistory from "@/src/components/users/graph-history";
+import PlayHistory from "@/src/components/users/play-history";
 
 interface BestSong {
   id: number;
