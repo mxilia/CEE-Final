@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 interface BestSong {
   id: number;
@@ -8,19 +8,28 @@ interface BestSong {
 
 interface UserDataProps {
   id: number;
-  name: string;
-  profile_picture: string;
-  Ranking: string;
-  Streak: number;
+  handler?: string;
+  profile_url?: string;
+  ranking?: string;
+  streak?: number;
   total_score: number;
-  best_song: BestSong;
-  sing_count: number;
+  best_song?: BestSong;
+  sing_count?: number;
 }
 
-export default function FullUser(User: UserDataProps) {
+export default function FullUser({User, isCurrentUser}: {User: UserDataProps, isCurrentUser: boolean  }) {
+  
+  console.log("Userrr" ,User)
   return (
     <div className="relative flex flex-col rounded-2xl border border-neutral-800 bg-[#0a0a0a] p-6 sm:p-8 overflow-hidden">
       
+
+      {isCurrentUser && (
+        <div className="absolute top-4 right-4 flex gap-2">
+            <button className="text-xs bg-sky-600 hover:bg-sky-500 text-white px-3 py-1 rounded">Edit Profile</button>
+        </div>
+      )}
+
       {/* Decorative top-left angled label */}
       <div className="absolute top-0 left-0 bg-neutral-800 text-neutral-300 text-sm font-extrabold px-6 py-1 rounded-br-2xl">
         1
@@ -32,7 +41,7 @@ export default function FullUser(User: UserDataProps) {
           {/* Name */}
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-black italic tracking-wider text-white sm:text-4xl uppercase">
-              {User.name}
+              {User?.handler || User.id.toString() } 
             </h1>
             <svg className="w-8 h-8 text-neutral-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
           </div>
@@ -48,7 +57,7 @@ export default function FullUser(User: UserDataProps) {
                 </div>
                 <div className="flex flex-col">
                   <div className="text-xs font-semibold tracking-wider text-neutral-500 uppercase">Ranking</div>
-                  <div className="text-xl font-bold text-neutral-100">{User.Ranking}</div>
+                  <div className="text-xl font-bold text-neutral-100">{User.ranking || "N/A" }</div>
                 </div>
               </div>
 
@@ -58,7 +67,7 @@ export default function FullUser(User: UserDataProps) {
                 </div>
                 <div className="flex flex-col">
                   <div className="text-xs font-semibold tracking-wider text-neutral-500 uppercase">Streak</div>
-                  <div className="text-xl font-bold text-neutral-100">{User.Streak}</div>
+                  <div className="text-xl font-bold text-neutral-100">{User.streak || 0}</div>
                 </div>
               </div>
 
@@ -81,9 +90,9 @@ export default function FullUser(User: UserDataProps) {
                 
                 <div className="flex items-center gap-6 justify-between">
                 
-                  <span className="text-xl font-black italic text-white uppercase">{User.best_song.name}</span>
+                  <span className="text-xl font-black italic text-white uppercase">{User.best_song?.name || ""}</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black text-white">{User.best_song.score.toLocaleString()}</span>
+                    <span className="text-2xl font-black text-white">{User.best_song?.score.toLocaleString()|| ""}</span>
                     <span className="text-neutral-400 font-semibold">points</span>
                   </div>
                 
@@ -95,7 +104,7 @@ export default function FullUser(User: UserDataProps) {
               <div className="flex flex-col justify-center">
                 <h2 className="text-sm font-bold tracking-widest text-neutral-500 uppercase mb-2">Total Plays</h2>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black text-white">{User.sing_count}</span>
+                  <span className="text-3xl font-black text-white">{User.sing_count || 0}</span>
                   <span className="text-neutral-400 font-semibold">Songs</span>
                 </div>
               </div>
@@ -103,13 +112,19 @@ export default function FullUser(User: UserDataProps) {
 
           </div>
         </div>
+           
 
         {/* Avatar */}
         <div className="relative shrink-0 self-center sm:self-start group">
           <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-neutral-800 bg-neutral-900 overflow-hidden">
-            <img src={User.profile_picture} alt={User.name} className="w-full h-full object-cover opacity-90" />
+            {User.profile_url ? (
+                  <img src={User.profile_url} alt="Avatar" className="w-full h-full object-cover opacity-90" />
+              ) : (
+                  <span className="text-xs text-sky-200/70">Avatar</span>
+              )}
           </div>
         </div>
+        
       </div>
     </div>
   );
