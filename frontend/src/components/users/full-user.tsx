@@ -1,5 +1,10 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { mutate } from "swr"
+import { env } from "@/src/config/env"
+
 interface BestSong {
   id: number;
   name: string;
@@ -18,32 +23,120 @@ interface UserDataProps {
 }
 
 export default function FullUser({User, isCurrentUser}: {User: UserDataProps, isCurrentUser: boolean  }) {
+  const router = useRouter()
+  const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+ 
+  const [formData, setFormData] = useState({
+    handler: User.handler,
+    profile_url: User.profile_url || ""
+  })
+
   
-  console.log("Userrr" ,User)
+  const handleSave = async () => {
+    setIsSaving(true)
+    
+    try {
+      const res = await fetch(`${env.API_URL}/users/${User.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "omit", 
+        body: JSON.stringify({
+          handler: formData.handler,
+          profile_url: formData.profile_url,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to update profile")
+        
+      }
+
+      if (formData.handler !== User.handler) {
+        router.push(`/user/${formData.handler}`)
+      } else {
+        // If only the profile picture changed, we stay on the page.
+        await mutate(`${env.API_URL}/users/handler/${User.handler}`)
+        setIsEditing(false)
+      }
+      
+    } catch (error) {
+      
+      console.error("Profile update error:", error)
+      alert("Failed to update profile. The handler might already be taken.")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+  // console.log("Userrr" ,User)
   return (
     <div className="relative flex flex-col rounded-2xl border border-neutral-800 bg-[#0a0a0a] p-6 sm:p-8 overflow-hidden">
       
-
-      {isCurrentUser && (
-        <div className="absolute top-4 right-4 flex gap-2">
-            <button className="text-xs bg-sky-600 hover:bg-sky-500 text-white px-3 py-1 rounded">Edit Profile</button>
-        </div>
-      )}
-
       {/* Decorative top-left angled label */}
       <div className="absolute top-0 left-0 bg-neutral-800 text-neutral-300 text-sm font-extrabold px-6 py-1 rounded-br-2xl">
         1
       </div>
+
+      {/* Edit Button and Save/Cancel Actions */}
+      {isCurrentUser && (
+        <div className="flex justify-end gap-2 z-10">
+          {isEditing ? (
+            <>
+              <button 
+                onClick={() => {
+                  setFormData({ handler: User.handler, profile_url: User.profile_url || "" })
+                  setIsEditing(false)
+                }} 
+                disabled={isSaving}
+                className="text-xs font-bold uppercase tracking-wider bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSave} 
+                disabled={isSaving}
+                className="text-xs font-bold uppercase tracking-wider bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {isSaving ? "Saving..." : "Save Changes"}
+              </button>
+            </>
+          ) : (
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="text-xs font-bold uppercase tracking-wider bg-[#28282a] hover:bg-slate-500 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+      )}
+
 
       <div className="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-6 mt-4">
         <div className="flex flex-col w-full gap-6">
           
           {/* Name */}
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-black italic tracking-wider text-white sm:text-4xl uppercase">
-              {User?.handler || User.id.toString() } 
-            </h1>
-            <svg className="w-8 h-8 text-neutral-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              {isEditing ? (
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold uppercase tracking-widest">Enter Name</label>
+                        <input 
+                            type="text"
+                            value={formData.handler}
+                            onChange={(e) => setFormData({ ...formData, handler: e.target.value })}
+                            className="bg-[#121212] border border-sky-500/30 rounded-lg px-3 py-1.5 text-2xl font-bold tracking-tight focus:outline-none w-full max-w-xs transition-all"
+                        />
+                    </div>
+                ) : (
+                <>
+                  <h1 className="text-3xl font-black italic tracking-wider text-white sm:text-4xl uppercase">
+                    {User?.handler || User.id.toString() } 
+                  </h1>
+                  <svg className="w-8 h-8 text-neutral-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                </>
+              )}
           </div>
 
           <div className="flex flex-col gap-4 w-full">
@@ -57,7 +150,7 @@ export default function FullUser({User, isCurrentUser}: {User: UserDataProps, is
                 </div>
                 <div className="flex flex-col">
                   <div className="text-xs font-semibold tracking-wider text-neutral-500 uppercase">Ranking</div>
-                  <div className="text-xl font-bold text-neutral-100">{User.ranking || "N/A" }</div>
+                  <div className="text-xl font-bold text-neutral-100">{User?.ranking || "N/A" }</div>
                 </div>
               </div>
 
@@ -67,7 +160,7 @@ export default function FullUser({User, isCurrentUser}: {User: UserDataProps, is
                 </div>
                 <div className="flex flex-col">
                   <div className="text-xs font-semibold tracking-wider text-neutral-500 uppercase">Streak</div>
-                  <div className="text-xl font-bold text-neutral-100">{User.streak || 0}</div>
+                  <div className="text-xl font-bold text-neutral-100">{User?.streak || 0}</div>
                 </div>
               </div>
 
@@ -104,7 +197,7 @@ export default function FullUser({User, isCurrentUser}: {User: UserDataProps, is
               <div className="flex flex-col justify-center">
                 <h2 className="text-sm font-bold tracking-widest text-neutral-500 uppercase mb-2">Total Plays</h2>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black text-white">{User.sing_count || 0}</span>
+                  <span className="text-3xl font-black text-white">{User?.sing_count || 0}</span>
                   <span className="text-neutral-400 font-semibold">Songs</span>
                 </div>
               </div>

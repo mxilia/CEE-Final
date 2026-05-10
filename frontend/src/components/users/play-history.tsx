@@ -10,12 +10,15 @@ export default function PlayHistory({ userId }: { userId: number }) {
     if (previousPageData && pageIndex >= previousPageData.meta.totalPages) return null
     return `${env.API_URL}/play-history/user/${userId}?page=${pageIndex + 1}&limit=5`
   }
+  
 
   const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher)
 
+  
   const playHistory = data ? data.flatMap((page) => page.data) : []
   const hasMore = data && data[data.length - 1]?.meta?.page < data[data.length - 1]?.meta?.totalPages
 
+  console.log("Fetched play history data:", playHistory) // Debug log to verify fetched data
   return (
     <div className="relative flex flex-col rounded-2xl border border-neutral-800 bg-[#0a0a0a] p-6 sm:p-8 w-full">
       
@@ -32,7 +35,7 @@ export default function PlayHistory({ userId }: { userId: number }) {
         <div className="flex flex-col gap-3">
           {playHistory.map((song: any, idx: number) => (
             <div 
-              key={`${song.id}-${idx}`} // Use index as fallback key in case history has repeated entries
+              key={song.id} 
               className="flex items-center gap-5 rounded-2xl border border-neutral-800 bg-[#121212] p-4 hover:bg-[#1a1a1a] transition-colors duration-200"
             >
               <div className="flex-shrink-0 text-neutral-500 bg-[#050505] p-3 rounded-xl border border-neutral-800">
