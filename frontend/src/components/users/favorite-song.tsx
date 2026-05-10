@@ -39,7 +39,6 @@ export default function FavoriteSong({ favorites }: { favorites: Favorite[] }) {
               <span className="text-sm font-medium text-neutral-500 uppercase tracking-widest">{song.song_artist}</span>
             </div>
 
-      
           </div>
         ))}
       </div>

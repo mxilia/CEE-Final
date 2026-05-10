@@ -20,6 +20,8 @@ interface UserDataProps {
   sing_count: number;
 }
 
+
+
 const UserPage = async ({ params }: { params: Promise<{ name: string }> }) => {
   const name = (await params).name;
 
