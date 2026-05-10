@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Trophy, LogOut, User, LogIn } from "lucide-react"
+import { Trophy, LogOut, User, LogIn ,Home} from "lucide-react"
 import useSWR from "swr"
 import { env } from "@/src/config/env"
 import { logout } from "@/src/lib/auth"
@@ -74,6 +74,24 @@ export default function KaraokeNavbar() {
                     {/* ACTION BUTTONS */}
                     <div className="flex items-center gap-2">
 
+                        {/* Home */}
+                        <Link
+                            href="/home"
+                            className="flex items-center justify-center w-10 h-10 sm:w-auto sm:px-5 bg-zinc-900/50 hover:bg-zinc-800 backdrop-blur-md border border-white/5 rounded-full transition-all hover:scale-105 active:scale-95 group"
+                            title="Home"
+                        >
+                            {/* I want white home Icon */}
+                            <Home
+                                size={14}
+                                className="text-white group-hover:animate-bounce"
+                            />
+
+                            <span className="hidden sm:inline-block ml-2 text-xs font-bold uppercase tracking-widest text-white">
+                                Home
+                            </span>
+                        </Link>
+
+
                         <Link
                             href="/leaderboard"
                             className="flex items-center justify-center w-10 h-10 sm:w-auto sm:px-5 bg-zinc-900/50 hover:bg-zinc-800 backdrop-blur-md border border-white/5 rounded-full transition-all hover:scale-105 active:scale-95 group"
@@ -88,6 +106,10 @@ export default function KaraokeNavbar() {
                                 Rank
                             </span>
                         </Link>
+
+
+
+
 
                         {userData ? <button
                             onClick={async () => {
