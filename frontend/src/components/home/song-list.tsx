@@ -7,6 +7,7 @@ import { Music2, Sparkles, Loader2 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { cn } from '@/src/lib/utils'
+import { da } from 'zod/locales'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -24,6 +25,10 @@ export default function SongList() {
     }
 
     const { data, error, size, setSize, isValidating, isLoading } = useSWRInfinite(getKey, fetcher)
+
+    console.log("Fetched song data:", data) // Debug log to verify fetched data
+    console.log("SWR Error:", error) // Debug log to check for errors
+    console.log("Current page size:", size) // Debug log to check the current page size
 
     // 2. Flatten the nested data [ [{song}, {song}], [{song}, {song}] ]
     const songs = data ? data.flatMap((page) => page.data).map((song: any) => ({
