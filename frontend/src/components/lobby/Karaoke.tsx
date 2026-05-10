@@ -260,6 +260,7 @@ export default function Karaoke({ songId }: { songId: string }) {
 
                 <div className="relative h-full w-full">
                     {/* Target Pitches (The "Notes" to hit) */}
+            
                     {pitchData?.filter(p => p.t >= time - 2 && p.t <= time + 6).map((p, i) => {
                         const midi = 12 * Math.log2(p.f / 440) + 69
                         const x = (p.t - time) * 250 + (window.innerWidth * 0.20)
