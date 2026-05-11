@@ -13,12 +13,13 @@ export default function PlayHistory({ userId }: { userId: number }) {
   
 
   const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher)
-
   
   const playHistory = data ? data.flatMap((page) => page.data) : []
   const hasMore = data && data[data.length - 1]?.meta?.page < data[data.length - 1]?.meta?.totalPages
 
+
   console.log("Fetched play history data:", playHistory) // Debug log to verify fetched data
+  
   return (
     <div className="relative flex flex-col rounded-2xl border border-neutral-800 bg-[#0a0a0a] p-6 sm:p-8 w-full">
       
