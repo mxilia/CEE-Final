@@ -9,9 +9,13 @@ func ToUserResponse(user *entities.User) *UserResponse {
 		ID:      user.ID,
 		Handler: user.Handler,
 		// Email:      user.Email,
-		ProfileUrl: user.ProfileUrl,
-		TotalScore: user.TotalScore,
-		CreatedAt:  user.CreatedAt,
+		ProfileUrl:    user.ProfileUrl,
+		TotalScore:    user.TotalScore,
+		Accuracy:      user.Accuracy,
+		MaxCombo:      user.MaxCombo,
+		SingCount:     user.SingCount,
+		MinutesPlayed: user.MinutesPlayed,
+		CreatedAt:     user.CreatedAt,
 	}
 }
 

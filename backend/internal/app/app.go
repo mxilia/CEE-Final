@@ -8,7 +8,22 @@ import (
 	"github.com/mxilia/CEE-Final/pkg/middleware"
 	"github.com/mxilia/CEE-Final/pkg/routes"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
+
+func setUpSongs(db *gorm.DB) error {
+
+	songs := []entities.Song{
+		{ID: 1, Title: "The Walls", Artist: "Chase Atlantic"},
+		{ID: 2, Title: "double take", Artist: "Dhruv"},
+		{ID: 3, Title: "Ever-Forever", Artist: "BILLKIN"},
+		{ID: 4, Title: "NO BATIDAO", Artist: "ZXKAI, slxugther"},
+	}
+	return db.
+		Clauses(clause.OnConflict{DoNothing: true}).
+		Create(&songs).Error
+
+}
 
 func setupDependencies(env string) (*gorm.DB, *config.Config, error) {
 	cfg := config.GetConfig(env)
@@ -20,12 +35,16 @@ func setupDependencies(env string) (*gorm.DB, *config.Config, error) {
 
 	if env == "dev" {
 		/*
-			db.Migrator().DropTable(&entities.User{},
+			db.Migrator().DropTable(
+				&entities.User{},
 				&entities.Session{},
 				&entities.Song{},
-				&entities.SongData{},
-				&entities.KaraokeJob{})
+				&entities.FavoriteSong{},
+				&entities.PlayHistory{},
+				&entities.ScoreHistory{},
+			)
 		*/
+
 	}
 
 	if err := db.AutoMigrate(
@@ -34,8 +53,12 @@ func setupDependencies(env string) (*gorm.DB, *config.Config, error) {
 		&entities.Song{},
 		&entities.FavoriteSong{},
 		&entities.PlayHistory{},
-		&entities.RankHistory{},
+		&entities.ScoreHistory{},
 	); err != nil {
+		return nil, nil, err
+	}
+
+	if err := setUpSongs(db); err != nil {
 		return nil, nil, err
 	}
 	return db, cfg, nil

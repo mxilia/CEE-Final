@@ -298,3 +298,18 @@ func (h *HttpUserHandler) DeleteUser(c *fiber.Ctx) error {
 
 	return responses.Message(c, fiber.StatusOK, "deleted successfully")
 }
+
+func (h *HttpUserHandler) GetRanking(c *fiber.Ctx) error {
+	userID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return responses.ErrorWithMessage(c, appError.ErrInvalidData, "invalid id")
+	}
+
+	ranking, err := h.usecase.FindRanking(userID)
+	if err != nil {
+		return responses.ErrorWithMessage(c, err, "failed to get user ranking")
+	}
+	return c.JSON(fiber.Map{
+		"ranking": ranking,
+	})
+}
