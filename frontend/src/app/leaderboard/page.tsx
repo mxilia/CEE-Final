@@ -126,7 +126,7 @@ export default function Leaderboard() {
                         <Link
                             href={`/user/${player.handler}`}
                             key={`${player.handler}-${i}`}
-                            className="group flex items-center justify-between p-4 bg-zinc-900/20 hover:bg-zinc-800/40 border border-white/5 rounded-2xl transition-all hover:scale-[1.01] cursor-pointer block"
+                            className="group flex items-center justify-between p-4 bg-zinc-900/20 hover:bg-zinc-800/40 border border-white/5 rounded-2xl transition-all hover:scale-[1.01] cursor-pointer"
                         >
 
                             <div className="flex items-center gap-4">
