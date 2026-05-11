@@ -35,7 +35,7 @@ export default function UserPage({ params }: { params: Promise<{ name: string }>
                 <FullUser User={user} isCurrentUser={isCurrentUser} />
                 <FavoriteSong userId={user.id} isCurrentUser={isCurrentUser} />
                 <GraphHistory userId={user.id} />
-                <BestPlay />
+                <BestPlay userId={user.id} />
                 <PlayHistory userId={user.id} />
             </div>
         </div>

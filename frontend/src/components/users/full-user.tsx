@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { mutate } from "swr"
+import useSWR, { mutate } from "swr"
 import { env } from "@/src/config/env"
 import { Camera, Save, X, Star, Trophy, Flame, Mic2, User, Target, Zap, Activity } from "lucide-react"
 
@@ -53,6 +53,11 @@ export default function FullUser({ User: userData, isCurrentUser }: { User: User
             setIsSaving(false)
         }
     }
+
+    const { data: rankingData, isLoading: isRankingLoading } = useSWR(isCurrentUser ? `${env.API_URL}/users/${userData.id}/ranking` : null, {
+        fetcher: (url) => fetch(url, { credentials: "include" }).then(res => res.json()),
+        suspense: true,
+    })
 
     console.log("userData:", userData) // Debug log to verify user data
     return (
@@ -131,7 +136,7 @@ export default function FullUser({ User: userData, isCurrentUser }: { User: User
 
                         {/* --- NEW STATS GRID --- */}
                         <div className="grid grid-cols-2 xs:flex xs:flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-3 pt-2">
-                            <MiniStat icon={<Trophy size={14}/>} value={userData.ranking || "—"} label="Rank" color="text-yellow-500" />
+                            <MiniStat icon={<Trophy size={14}/>} value={rankingData?.ranking || "—"} label="Rank" color="text-yellow-500" />
                             <MiniStat icon={<Mic2 size={14}/>} value={userData.total_score.toLocaleString()} label="Total Score" color="text-green-500" />
                             <MiniStat icon={<Target size={14}/>} value={`${userData.accuracy.toFixed(1)}%`} label="Accuracy" color="text-blue-500" />
                             <MiniStat icon={<Zap size={14}/>} value={userData.max_combo} label="Max Combo" color="text-orange-500" />
