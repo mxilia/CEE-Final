@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "../components/shared/navbar";
+import ChatBox from "../components/shared/chat-box";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-black flex flex-col">
         {children}
+        <ChatBox />
       </body>
     </html>
   );
