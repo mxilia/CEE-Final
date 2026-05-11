@@ -1,9 +1,36 @@
 "use client"
 
 import { env } from "@/src/config/env"
+import { recordCaloriesToGoogleFit } from "@/src/lib/google-fit"
 import { cn } from "@/src/lib/utils"
+import { info } from "console"
 import { useEffect, useMemo, useRef, useState } from "react"
 import useSWR from "swr"
+
+type GisTokenClient = {
+  requestAccessToken: () => void
+}
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        oauth2: {
+          initTokenClient: (config: {
+            client_id: string
+            scope: string
+            callback: (response: { access_token?: string; error?: string }) => void
+          }) => GisTokenClient
+        }
+      }
+    }
+  }
+}
+
+// Calories formula: singing MET ~2.0, avg adult 70 kg → 140 kcal/hr
+function calcCalories(durationSeconds: number): number {
+  return Math.round((durationSeconds / 3600) * 140 * 10) / 10
+}
 
 type Segment = { start: number; end: number; text: string }
 type PitchPoint = { t: number; f: number; note: string; confidence: number }
@@ -26,8 +53,11 @@ export default function Karaoke({ songId }: { songId: string }) {
     const [isEnded, setIsEnded] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isError, setIsError] = useState(false)
+    const [songDuration, setSongDuration] = useState(0)
+    const [fitStatus, setFitStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
 
     // Fetch Song Data
+    const { data: songData } = useSWR<{ title: string; artist: string }>(`${env.API_URL}/songs/${songId}`, fetcher)
     const { data: lyricsData } = useSWR(`${env.API_URL}/songs/${songId}/lyrics`, fetcher)
     const { data: pitchData, isLoading } = useSWR<PitchPoint[]>(`${env.API_URL}/songs/${songId}/pitch`, fetcher)
 
@@ -159,7 +189,64 @@ export default function Karaoke({ songId }: { songId: string }) {
         }
     }, [isLoading])
 
-    // 3. Logic to determine current lyric
+    // 3. Load Google Identity Services script for Google Fit OAuth
+    useEffect(() => {
+        if (!env.GOOGLE_CLIENT_ID) return
+        const script = document.createElement("script")
+        script.src = "https://accounts.google.com/gsi/client"
+        script.async = true
+        document.head.appendChild(script)
+        return () => { document.head.removeChild(script) }
+    }, [])
+
+    // 4. Track song duration once audio metadata is ready
+    useEffect(() => {
+        const audio = audioRef.current
+        if (!audio) return
+        const onMetadata = () => setSongDuration(audio.duration)
+        audio.addEventListener("loadedmetadata", onMetadata)
+        if (audio.readyState >= 1) setSongDuration(audio.duration)
+        return () => audio.removeEventListener("loadedmetadata", onMetadata)
+    }, [isLoading])
+
+    const handleRecordToGoogleFit = () => {
+        if (!env.GOOGLE_CLIENT_ID) return
+        if (!window.google?.accounts?.oauth2) {
+            alert("Google Identity Services not loaded yet. Please try again in a moment.")
+            return
+        }
+        const calories = calcCalories(songDuration)
+        const client = window.google.accounts.oauth2.initTokenClient({
+            client_id: env.GOOGLE_CLIENT_ID,
+            scope: "https://www.googleapis.com/auth/fitness.activity.write email openid",
+            callback: async (tokenResponse) => {
+
+                const info = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {headers: { Authorization: `Bearer ${tokenResponse.access_token}` }}).then(r => r.json())
+                console.log("[GoogleFit] Token belongs to:", info.email)
+
+
+                if (tokenResponse.error || !tokenResponse.access_token) {
+                    setFitStatus("error")
+                    return
+                }
+                setFitStatus("loading")
+                try {
+                    await recordCaloriesToGoogleFit(
+                        tokenResponse.access_token,
+                        calories,
+                        songDuration * 1000
+                    )
+                    setFitStatus("success")
+                } catch (e) {
+                    console.error("Google Fit error:", e)
+                    setFitStatus("error")
+                }
+            },
+        })
+        client.requestAccessToken()
+    }
+
+    // 5. Logic to determine current lyric
     const currentLyric: Segment | null = useMemo(() => {
         if (!lyricsData?.segments) return null
         return lyricsData.segments.find((s: Segment) => time >= s.start && time <= s.end)
@@ -204,6 +291,40 @@ export default function Karaoke({ songId }: { songId: string }) {
                                 </p>
                             </div>
 
+                            {/* Calorie section */}
+                            <div className="py-4 px-6 bg-orange-500/10 rounded-2xl border border-orange-500/20">
+                                <p className="text-orange-400 text-xs font-bold uppercase tracking-widest mb-1">Calories Burned</p>
+                                <p className="text-4xl font-black text-orange-300 tabular-nums">
+                                    {calcCalories(songDuration).toFixed(1)}
+                                    <span className="text-lg font-semibold ml-1">kcal</span>
+                                </p>
+                                <p className="text-zinc-500 text-xs mt-1">
+                                    {Math.floor(songDuration / 60)}m {Math.round(songDuration % 60)}s of singing
+                                </p>
+                            </div>
+
+                            {env.GOOGLE_CLIENT_ID && (
+                                <button
+                                    onClick={handleRecordToGoogleFit}
+                                    disabled={fitStatus === "loading" || fitStatus === "success"}
+                                    className={cn(
+                                        "w-full py-3 font-bold rounded-2xl transition-all text-sm",
+                                        fitStatus === "success"
+                                            ? "bg-blue-900 text-blue-400 cursor-default"
+                                            : fitStatus === "error"
+                                            ? "bg-red-900/50 text-red-400 hover:bg-red-900"
+                                            : fitStatus === "loading"
+                                            ? "bg-blue-900/50 text-blue-400 cursor-wait"
+                                            : "bg-blue-600 hover:bg-blue-500 text-white"
+                                    )}
+                                >
+                                    {fitStatus === "idle" && "Record to Google Fit"}
+                                    {fitStatus === "loading" && "Recording..."}
+                                    {fitStatus === "success" && "✓ Saved to Google Fit"}
+                                    {fitStatus === "error" && "Failed — Tap to Retry"}
+                                </button>
+                            )}
+
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     onClick={() => window.location.reload()}
@@ -212,7 +333,7 @@ export default function Karaoke({ songId }: { songId: string }) {
                                     RETRY
                                 </button>
                                 <button
-                                    onClick={() => window.location.href = '/home'} // Change to your lobby path
+                                    onClick={() => window.location.href = '/home'}
                                     className="py-4 bg-green-500 hover:bg-green-400 text-black font-black rounded-2xl transition-all"
                                 >
                                     CONTINUE
