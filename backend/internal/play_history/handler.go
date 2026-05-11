@@ -93,3 +93,20 @@ func (h *HttpPlayHistoryHandler) GetPlayHistoryByUserID(c *fiber.Ctx) error {
 		},
 	})
 }
+
+func (h *HttpPlayHistoryHandler) GetBestPerformance(c *fiber.Ctx) error {
+	userID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return responses.Error(c, appError.ErrInvalidData)
+	}
+
+	var bestPlayHistory entities.PlayHistory
+	if err := h.db.Where("user_id = ?", userID).Preload("Song").Order("total_score DESC").First(&bestPlayHistory).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.JSON(fiber.Map{"data": nil})
+		}
+		return responses.Error(c, appError.ErrInternalServer)
+	}
+
+	return c.JSON(fiber.Map{"data": bestPlayHistory})
+}

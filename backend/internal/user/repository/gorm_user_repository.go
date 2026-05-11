@@ -58,6 +58,14 @@ func (r *GormUserRepository) FindByEmail(email string) (*entities.User, error) {
 	return &user, nil
 }
 
+func (r *GormUserRepository) FindRanking(id uuid.UUID) (int64, error) {
+	var ranking int64
+	if err := r.db.Model(&entities.User{}).Where("total_score > (SELECT total_score FROM users WHERE id = ?)", id).Count(&ranking).Error; err != nil {
+		return -1, err
+	}
+	return ranking + 1, nil
+}
+
 func (r *GormUserRepository) Count() (int64, error) {
 	var count int64
 	if err := r.db.Model(&entities.User{}).Count(&count).Error; err != nil {

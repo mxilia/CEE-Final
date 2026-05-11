@@ -12,6 +12,7 @@ type UserUseCase interface {
 	FindUserByID(id uuid.UUID) (*entities.User, error)
 	FindUserByHandler(handler string) (*entities.User, error)
 	FindUserByEmail(email string) (*entities.User, error)
+	FindRanking(id uuid.UUID) (int64, error)
 	UpdateUserTotalScore(tx *gorm.DB, userID uuid.UUID, score int) error
 	UpdateUserAccuracy(userID uuid.UUID, accuracy float64) error
 	UpdateUserMaxCombo(userID uuid.UUID, maxCombo int) error
