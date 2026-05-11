@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@sendbird/chat": "^4.22.2",
     "clsx": "^2.1.1",
     "lucide-react": "^1.14.0",
     "next": "16.2.4",
