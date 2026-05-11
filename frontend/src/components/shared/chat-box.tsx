@@ -21,6 +21,7 @@ export default function ChatBox() {
     const [messages, setMessages] = useState<ChatMessage[]>([])
     const [input, setInput] = useState("")
     const [status, setStatus] = useState<Status>("idle")
+    const [errorMsg, setErrorMsg] = useState("")
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
     const [currentNickname, setCurrentNickname] = useState("Player")
     const [unread, setUnread] = useState(0)
@@ -63,34 +64,51 @@ export default function ChatBox() {
     useEffect(() => {
         if (!env.SENDBIRD_APP_ID || !currentUserId) return
 
+        let isMounted = true
+
         const init = async () => {
             setStatus("connecting")
             try {
-                const SendbirdChat = (await import("@sendbird/chat")).default
+                const { default: SendbirdChat } = await import("@sendbird/chat")
                 const { OpenChannelModule, OpenChannelHandler } =
                     await import("@sendbird/chat/openChannel")
 
-                const sb = SendbirdChat.init({
-                    appId: env.SENDBIRD_APP_ID!,
-                    modules: [new OpenChannelModule()],
-                })
+                // Reuse existing instance if already initialized (React Strict Mode safe)
+                let sb: any
+                try {
+                    sb = SendbirdChat.init({
+                        appId: env.SENDBIRD_APP_ID!,
+                        modules: [new OpenChannelModule()],
+                    })
+                    console.log("[Sendbird] init OK")
+                } catch {
+                    sb = (SendbirdChat as any).instance
+                    console.log("[Sendbird] reusing existing instance")
+                }
+
+                if (!isMounted) return
                 sbRef.current = sb
 
-                await sb.connect(currentUserId)
-                await sb.updateCurrentUserInfo({ nickname: currentNickname })
+                // Sanitize userId — Sendbird only allows alphanumeric, hyphen, underscore, period
+                const safeUserId = currentUserId.replace(/[^a-zA-Z0-9\-_.]/g, "_").slice(0, 80)
+                const safeNickname = (currentNickname || "Player").slice(0, 80)
+                console.log("[Sendbird] connecting as:", safeUserId, "/", safeNickname)
 
-                // Get or create open channel
-                let channel: any
-                try {
-                    channel = await (sb as any).openChannel.getChannel(CHANNEL_URL)
-                } catch {
-                    channel = await (sb as any).openChannel.createChannel({
-                        channelUrl: CHANNEL_URL,
-                        name: "🎤 Karaoke Chat",
-                        isEphemeral: false,
-                    })
+                // Connect only if not already connected
+                if ((sb as any).connectionState !== "OPEN") {
+                    await sb.connect(safeUserId)
+                    console.log("[Sendbird] connected")
                 }
+                await sb.updateCurrentUserInfo({ nickname: safeNickname })
+                console.log("[Sendbird] nickname updated")
+
+                // Get open channel (pre-created via Platform API)
+                const channel: any = await sb.openChannel.getChannel(CHANNEL_URL)
+                console.log("[Sendbird] got channel")
+
+                if (!isMounted) return
                 await channel.enter()
+                console.log("[Sendbird] entered channel")
                 channelRef.current = channel
 
                 // Load previous messages
@@ -99,27 +117,34 @@ export default function ChatBox() {
                     reverse: false,
                 })
                 const prev = await query.load()
+
+                if (!isMounted) return
                 setMessages(prev as ChatMessage[])
 
                 // Listen for new messages
                 const handler = new OpenChannelHandler({
                     onMessageReceived: (_ch: any, msg: any) => {
+                        if (!isMounted) return
                         setMessages(prev => [...prev, msg as ChatMessage])
                         setUnread(n => n + 1)
                     },
                 })
-                ;(sb as any).openChannel.addOpenChannelHandler("karaoke-handler", handler)
+                sb.openChannel.addOpenChannelHandler("karaoke-handler", handler)
 
-                setStatus("connected")
-            } catch (e) {
+                if (isMounted) setStatus("connected")
+            } catch (e: any) {
                 console.error("[Sendbird]", e)
-                setStatus("error")
+                if (isMounted) {
+                    setErrorMsg(e?.message || e?.code || String(e))
+                    setStatus("error")
+                }
             }
         }
 
         init()
 
         return () => {
+            isMounted = false
             sbRef.current?.openChannel?.removeOpenChannelHandler("karaoke-handler")
             sbRef.current?.disconnect()
         }
@@ -201,9 +226,10 @@ export default function ChatBox() {
                         )}
 
                         {status === "error" && (
-                            <p className="text-center text-xs text-red-400 mt-8">
-                                Failed to connect. Check your Sendbird App ID.
-                            </p>
+                            <div className="text-center mt-8 px-2 space-y-1">
+                                <p className="text-xs text-red-400">Failed to connect.</p>
+                                <p className="text-[10px] text-zinc-600 break-words">{errorMsg}</p>
+                            </div>
                         )}
 
 
