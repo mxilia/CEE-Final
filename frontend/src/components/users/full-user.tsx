@@ -44,6 +44,7 @@ export default function FullUser({ User: userData, isCurrentUser }: { User: User
                 router.push(`/user/${formData.handler}`)
             } else {
                 await mutate(`${env.API_URL}/users/handler/${userData.handler}`)
+                await mutate(`${env.API_URL}/me`)
                 setIsEditing(false)
             }
         } catch (error) {
