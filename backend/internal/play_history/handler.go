@@ -40,9 +40,22 @@ func (h *HttpPlayHistoryHandler) CreatePlayHistory(c *fiber.Ctx) error {
 		if err := tx.Create(playHistory).Error; err != nil {
 			return appError.ErrInternalServer
 		}
-		if err := h.userUserCase.UpdateUserTotalScore(userID, playHistory.TotalScore); err != nil {
+		if err := h.userUserCase.UpdateUserMinutesPlayed(userID, playHistory.MinutesPlayed); err != nil {
 			return appError.ErrInternalServer
 		}
+		if err := h.userUserCase.UpdateUserSingCount(userID, 1); err != nil {
+			return appError.ErrInternalServer
+		}
+		if err := h.userUserCase.UpdateUserTotalScore(tx, userID, playHistory.TotalScore); err != nil {
+			return appError.ErrInternalServer
+		}
+		if err := h.userUserCase.UpdateUserAccuracy(userID, playHistory.Accuracy); err != nil {
+			return appError.ErrInternalServer
+		}
+		if err := h.userUserCase.UpdateUserMaxCombo(userID, playHistory.MaxCombo); err != nil {
+			return appError.ErrInternalServer
+		}
+
 		return nil
 	})
 	if err != nil {
@@ -67,7 +80,7 @@ func (h *HttpPlayHistoryHandler) GetPlayHistoryByUserID(c *fiber.Ctx) error {
 
 	var playHistories []entities.PlayHistory
 	offset := (page - 1) * limit
-	if err := h.db.Where("user_id = ?", userID).Order("created_at DESC").Limit(limit).Offset(offset).Find(&playHistories).Error; err != nil {
+	if err := h.db.Where("user_id = ?", userID).Preload("Song").Order("created_at DESC").Limit(limit).Offset(offset).Find(&playHistories).Error; err != nil {
 		return responses.Error(c, appError.ErrInternalServer)
 	}
 
@@ -79,4 +92,21 @@ func (h *HttpPlayHistoryHandler) GetPlayHistoryByUserID(c *fiber.Ctx) error {
 			"totalPages": int(math.Ceil(float64(totalPlayHistories) / float64(limit))),
 		},
 	})
+}
+
+func (h *HttpPlayHistoryHandler) GetBestPerformance(c *fiber.Ctx) error {
+	userID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return responses.Error(c, appError.ErrInvalidData)
+	}
+
+	var bestPlayHistory entities.PlayHistory
+	if err := h.db.Where("user_id = ?", userID).Preload("Song").Order("total_score DESC").First(&bestPlayHistory).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.JSON(fiber.Map{"data": nil})
+		}
+		return responses.Error(c, appError.ErrInternalServer)
+	}
+
+	return c.JSON(fiber.Map{"data": bestPlayHistory})
 }

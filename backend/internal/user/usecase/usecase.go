@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/mxilia/CEE-Final/internal/entities"
@@ -84,6 +85,10 @@ func (s *UserService) FindUserByEmail(email string) (*entities.User, error) {
 	return user, nil
 }
 
+func (s *UserService) FindRanking(id uuid.UUID) (int64, error) {
+	return s.repo.FindRanking(id)
+}
+
 func (s *UserService) PatchUser(id uuid.UUID, user *entities.User) error {
 	if user.Handler != "" {
 		registeredUser, err := s.FindUserByHandler(user.Handler)
@@ -111,11 +116,58 @@ func (s *UserService) DeleteUser(id uuid.UUID) error {
 	return nil
 }
 
-func (s *UserService) UpdateUserTotalScore(userID uuid.UUID, score int) error {
+func (s *UserService) UpdateUserTotalScore(tx *gorm.DB, userID uuid.UUID, score int) error {
 	user, err := s.FindUserByID(userID)
 	if err != nil {
 		return err
 	}
 	user.TotalScore += score
+	scoreHistory := &entities.ScoreHistory{
+		UserID:     userID,
+		TotalScore: user.TotalScore,
+	}
+	fmt.Println("score history created", scoreHistory) // Debug log
+	if err := tx.Create(scoreHistory).Error; err != nil {
+		return appError.ErrInternalServer
+	}
+	return s.repo.Patch(userID, user)
+}
+
+func (s *UserService) UpdateUserAccuracy(userID uuid.UUID, accuracy float64) error {
+	user, err := s.FindUserByID(userID)
+	if err != nil {
+		return err
+	}
+	user.Accuracy = (float64(user.SingCount)*accuracy + user.Accuracy) / float64(user.SingCount)
+	return s.repo.Patch(userID, user)
+}
+
+func (s *UserService) UpdateUserMaxCombo(userID uuid.UUID, maxCombo int) error {
+	user, err := s.FindUserByID(userID)
+	if err != nil {
+		return err
+	}
+	if maxCombo > user.MaxCombo {
+		user.MaxCombo = maxCombo
+		return s.repo.Patch(userID, user)
+	}
+	return nil
+}
+
+func (s *UserService) UpdateUserSingCount(userID uuid.UUID, singCount int) error {
+	user, err := s.FindUserByID(userID)
+	if err != nil {
+		return err
+	}
+	user.SingCount += singCount
+	return s.repo.Patch(userID, user)
+}
+
+func (s *UserService) UpdateUserMinutesPlayed(userID uuid.UUID, minutes float64) error {
+	user, err := s.FindUserByID(userID)
+	if err != nil {
+		return err
+	}
+	user.MinutesPlayed += minutes
 	return s.repo.Patch(userID, user)
 }

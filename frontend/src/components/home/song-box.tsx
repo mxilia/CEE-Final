@@ -56,7 +56,7 @@ export const SongBox = ({ song }: SongProps) => {
     }
 
     return (
-        <div className="group relative flex items-center justify-between p-4 bg-zinc-900/40 hover:bg-zinc-900/60 border border-white/5 rounded-[2rem] transition-all duration-300 hover:scale-[1.01] hover:border-white/10 ring-1 ring-white/5 shadow-xl">
+        <div className="group relative flex items-center justify-between p-4 bg-zinc-900/40 hover:bg-zinc-900/60 border border-white/5 rounded-4xl transition-all duration-300 hover:scale-[1.01] hover:border-white/10 ring-1 ring-white/5 shadow-xl">
 
             <div className="flex items-center gap-4">
                 {/* Visual Thumbnail */}

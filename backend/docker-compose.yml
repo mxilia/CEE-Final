@@ -10,15 +10,6 @@ services:
     restart: unless-stopped
     ports:
       - "5432:5432"
-      
-  backend:
-    image: symoney/cee-backend:latest
-    env_file:
-      - .env.dev
-    container_name: backend
-    ports:
-      - "8000:8000"
-    restart: always
 
 volumes:
   postgres_data:
