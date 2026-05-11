@@ -1,7 +1,7 @@
-# Karaoke Pipeline: YouTube → karaoke-gen → Lyrics JSON → Pitch JSON
+# Karaoke Pipeline
+This is source code for generating karaoke files and metadata.
 
-This guide explains how to:
-
+Roadmap:
 1. Download a song from YouTube
 2. Generate:
    - instrumental track

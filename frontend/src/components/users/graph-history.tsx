@@ -1,73 +1,136 @@
 "use client";
 
-export default function GraphHistory() {
+import { env } from "@/src/config/env";
+import { Activity, TrendingUp, Loader2 } from "lucide-react";
+import useSWR from "swr";
+import { useMemo } from "react";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+interface ScoreHistory {
+  created_at: string;
+  total_score: number;
+}
+
+export default function GraphHistory({ userId }: { userId: string }) {
+  const { data, isLoading } = useSWR<{ data: ScoreHistory[] }>(
+    userId ? `${env.API_URL}/score-history/user/${userId}` : null,
+    fetcher
+  );
+
+  const { points, circlePoints, totalGain, maxScaleLabel } = useMemo(() => {
+    if (!data?.data || data.data.length === 0) {
+      return { points: "", circlePoints: [], totalGain: 0, maxScaleLabel: "0" };
+    }
+
+    const sorted = [...data.data].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+
+    const highestRecorded = Math.max(...sorted.map((h) => h.total_score));
+    // We set maxScale slightly higher than the record so dots aren't at the very ceiling
+    const maxScale = Math.max(highestRecorded * 1.15, 100000); 
+    
+    const now = new Date();
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(now.getMonth() - 6);
+    
+    const startTime = sixMonthsAgo.getTime();
+    const endTime = now.getTime();
+    const timeRange = endTime - startTime;
+
+    const mapped = sorted.map((h) => {
+      const recordTime = new Date(h.created_at).getTime();
+      const x = ((recordTime - startTime) / timeRange) * 100;
+      const y = 100 - (h.total_score / maxScale) * 100;
+      return { x: Math.max(0, x), y: Math.max(0, Math.min(100, y)) };
+    });
+
+    return { 
+      points: mapped.map(p => `${p.x},${p.y}`).join(" "), 
+      circlePoints: mapped, 
+      totalGain: sorted[sorted.length-1].total_score - (sorted.length > 1 ? sorted[0].total_score : 0),
+      maxScaleLabel: maxScale > 9999 ? `${(maxScale / 1000).toFixed(0)}K` : maxScale.toString()
+    };
+  }, [data]);
+
+  if (isLoading) return (
+    <div className="h-64 flex items-center justify-center bg-zinc-950 rounded-2xl border border-white/5">
+      <Loader2 className="animate-spin text-cyan-500" size={20} />
+    </div>
+  );
+
   return (
-    <div className="relative rounded-2xl border border-neutral-800 bg-[#0a0a0a] p-6 sm:p-8 w-full">
-      {/* Label 4 */}
-      <div className="absolute top-0 left-0 bg-neutral-800 text-neutral-300 text-sm font-extrabold px-6 py-1 rounded-br-2xl">
-        4
+    <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-xl">
+      <div className="absolute top-0 left-0 rounded-tl-xl  bg-zinc-800 text-cyan-500 text-[10px] font-black px-4 py-1 rounded-br-xl uppercase tracking-widest z-10">
+        Progression Log
       </div>
-      
-      <div className="flex justify-end mb-4">
-        <h2 className="text-2xl font-black italic text-white tracking-wider uppercase">
-          Max Combo History
-        </h2>
-      </div>
-      
-      {/* Graph Area */}
-      <div className="relative h-64 sm:h-80 w-full flex items-end">
-        {/* Y Axis Labels */}
-        <div className="absolute left-0 top-0 bottom-6 w-10 flex flex-col justify-between text-xs font-semibold text-neutral-500 pb-2">
-          <span>150</span>
-          <span>100</span>
-          <span>50</span>
-          <span>0</span>
+
+      <div className="flex items-center justify-between mb-8 mt-4">
+        <div className="flex items-center gap-2">
+          <Activity size={18} className="text-cyan-500" />
+          <h2 className="text-xl font-black italic text-white tracking-tighter uppercase leading-none">
+            Score Accumulation
+          </h2>
         </div>
+        <div className="flex items-center gap-1.5 bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-md">
+          <TrendingUp size={12} className="text-cyan-400" />
+          <span className="text-[10px] font-black text-cyan-400 uppercase tracking-tighter tabular-nums">
+            +{totalGain.toLocaleString()} pts
+          </span>
+        </div>
+      </div>
+
+      {/* Main Chart Wrapper */}
+      <div className="relative h-64 w-full pr-2 flex group">
         
-        {/* Y-Axis Label Rotated */}
-        <div className="absolute -left-6 top-1/2 -translate-y-1/2 -rotate-90 text-sm font-black italic text-neutral-600 tracking-widest uppercase">
-          Max Combo
+        {/* Y-Axis Labels: Positioned absolutely relative to the grid lines */}
+        <div className="relative w-10 h-[calc(100%-2rem)] flex flex-col justify-between text-[9px] font-black text-zinc-700 tabular-nums pointer-events-none">
+          <span className="leading-none">{maxScaleLabel}</span>
+          <span className="leading-none translate-y-1/2"></span>
+          <span className="leading-none translate-y-1/2"></span>
+          <span className="leading-none translate-y-1/2"></span>
+          <span className="leading-none text-zinc-900 translate-y-full">0</span>
         </div>
 
         {/* Chart Area */}
-        <div className="ml-10 w-full h-[calc(100%-1.5rem)] relative border-l border-b border-neutral-800">
-           {/* Grid lines */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100%_25%]" />
+        <div className="flex-1 h-[calc(100%-2rem)] relative border-l border-b border-white/5">
+          {/* Grid Background: Every 25% */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[100%_25%]" />
           
-          <svg 
-            className="absolute inset-0 w-full h-full text-neutral-300 overflow-visible" 
-            viewBox="0 0 100 100" 
-            preserveAspectRatio="none"
-          >
-            {/* The Line */}
-            <polyline
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-              points="0,85 15,30 30,50 45,20 60,60 75,10 90,40 100,5"
-            />
-            {/* Data Dots */}
-            <circle cx="15" cy="30" r="2" fill="currentColor" className="text-white" />
-            <circle cx="30" cy="50" r="2" fill="currentColor" className="text-white" />
-            <circle cx="45" cy="20" r="2" fill="currentColor" className="text-white" />
-            <circle cx="60" cy="60" r="2" fill="currentColor" className="text-white" />
-            <circle cx="75" cy="10" r="2" fill="currentColor" className="text-white" />
+          <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="cyan-gradient" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="rgb(34, 211, 238)" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+            </defs>
+            {circlePoints.length > 1 && (
+              <path d={`M ${circlePoints[0].x} 100 L ${points} L ${circlePoints[circlePoints.length - 1].x} 100 Z`} fill="url(#cyan-gradient)" />
+            )}
+            <polyline fill="none" stroke="rgb(34, 211, 238)" strokeWidth="2" points={points} style={{ vectorEffect: 'non-scaling-stroke' }} className="opacity-40" />
           </svg>
 
-          {/* Floating Data Tags */}
-          <div className="absolute left-[15%] top-[20%] -translate-x-1/2 bg-neutral-800 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">50</div>
-          <div className="absolute left-[30%] top-[55%] -translate-x-1/2 bg-neutral-800 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">20</div>
-          <div className="absolute left-[45%] top-[10%] -translate-x-1/2 bg-neutral-800 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">80</div>
-          <div className="absolute left-[75%] top-[0%] -translate-x-1/2 bg-neutral-800 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">100</div>
+          {/* HTML Overlay for dots */}
+          <div className="absolute inset-0 pointer-events-none">
+            {circlePoints.map((p, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-cyan-400 rounded-full border-2 border-zinc-950 shadow-[0_0_10px_rgba(34,211,238,1)] transition-transform group-hover:scale-125"
+                style={{ 
+                  left: `${p.x}%`, 
+                  top: `${p.y}%`,
+                  transform: 'translate(-50%, -50%)'
+                }}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* X Axis Labels */}
-        <div className="absolute left-10 bottom-0 right-0 h-6 flex justify-between items-end text-[10px] sm:text-xs font-semibold text-neutral-500 pl-2">
-          <span className="origin-left rotate-45">Song 1</span>
-          <span className="origin-left rotate-45">Song 2</span>
-          <span className="origin-left rotate-45">Song 3</span>
-          <span className="origin-left rotate-45">Song 4</span>
-          <span className="origin-left rotate-45">Song 5</span>
+        {/* X-Axis Labels */}
+        <div className="absolute left-10 bottom-0 right-0 h-8 flex justify-between items-center text-[9px] font-black text-zinc-600 uppercase tracking-tighter px-1">
+          <span className="bg-zinc-900 px-2 py-0.5 rounded">6 Months Ago</span>
+          <span className="text-cyan-500 bg-cyan-500/10 px-2 py-0.5 rounded">Today</span>
         </div>
       </div>
     </div>

@@ -20,8 +20,11 @@ type User struct {
 	Email      string    `gorm:"type:varchar(255);uniqueIndex" json:"email"`
 	ProfileUrl string    `gorm:"type:varchar(512);default:''" json:"profile_url"`
 
-	TotalScore int `gorm:"default:0;index:idx_score_desc,sort:desc" json:"total_score"`
-	SingCount  int `gorm:"default:0" json:"sing_count"`
+	TotalScore    int     `gorm:"default:0;index:idx_score_desc,sort:desc" json:"total_score"`
+	Accuracy      float64 `gorm:"default:0;index:idx_accuracy_desc,sort:desc" json:"accuracy"`
+	MaxCombo      int     `gorm:"default:0;" json:"max_combo"`
+	SingCount     int     `gorm:"default:0" json:"sing_count"`
+	MinutesPlayed float64 `gorm:"default:0" json:"minutes_played"`
 
 	CreatedAt time.Time `gorm:"timestamptz(3)" json:"created_at"`
 }

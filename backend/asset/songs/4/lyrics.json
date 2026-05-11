@@ -1,0 +1,369 @@
+{
+  "segments": [
+  {
+    "start": 0.26,
+    "end": 8.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 8.0,
+    "end": 15.0,
+    "text": "Vai quicando, vai jogando, n\u00e3o perde a raz\u00e3o, no batib\u00e3o, no batib\u00e3o, s\u00f3 por atenta\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 15.0,
+    "end": 22.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 22.0,
+    "end": 30.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 30.0,
+    "end": 37.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 37.0,
+    "end": 45.0,
+    "text": "Vai quicando, vai jogando, n\u00e3o perde a raz\u00e3o, no batid\u00e3o, no batid\u00e3o, s\u00f3 por atenta\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 45.0,
+    "end": 52.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 52.0,
+    "end": 60.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 60.0,
+    "end": 67.0,
+    "text": "Ela desce, ela sobe, no baile \u00e9 press\u00e3o, menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 67.0,
+    "end": 70.64,
+    "text": "Vai equipando, vai jogando, n\u00e3o perde a a\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 70.64,
+    "end": 74.48,
+    "text": "No batid\u00e3o, no batid\u00e3o, s\u00f3 pura habita\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 76.48,
+    "end": 79.88,
+    "text": "Parir, depress\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 79.88,
+    "end": 83.68,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 83.68,
+    "end": 87.28,
+    "text": "N\u00e3o pare, depress\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 87.28,
+    "end": 91.03999999999999,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 91.03999999999999,
+    "end": 94.68,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 94.68,
+    "end": 99.96000000000001,
+    "text": "Roupa meu cora\u00e7\u00e3o, vai equipando, vai jogando, n\u00e3o bate a a\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 99.96000000000001,
+    "end": 103.96000000000001,
+    "text": "No batid\u00e3o, no batid\u00e3o, s\u00f3 pura habita\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 103.96000000000001,
+    "end": 107.56,
+    "text": "Desce, ela sobe, no bali, menina \u00e9 press\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 107.56,
+    "end": 110.96000000000001,
+    "text": "Menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 110.96000000000001,
+    "end": 114.96000000000001,
+    "text": "Ela desce, ela sobe, no bali, menina \u00e9 press\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 114.96000000000001,
+    "end": 118.56,
+    "text": "Menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 118.56,
+    "end": 122.36000000000001,
+    "text": "Ela desce, ela sobe, no bali, \u00e9 press\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 122.44,
+    "end": 126.04,
+    "text": "Menina linda, perigosa, rouba meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 126.04,
+    "end": 129.64,
+    "text": "Vai equipando, vai jogando, n\u00e3o pede a a\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 129.64,
+    "end": 133.64,
+    "text": "No batid\u00e3o, no batid\u00e3o, s\u00f3 pura habita\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 135.64,
+    "end": 139.04,
+    "text": "Parir, depress\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 139.04,
+    "end": 142.84,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 142.84,
+    "end": 146.44,
+    "text": "N\u00e3o pare, depress\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 146.44,
+    "end": 150.16,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 150.16,
+    "end": 153.84,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 153.84,
+    "end": 157.44,
+    "text": "Roupa meu cora\u00e7\u00e3o, vai equipando, vai jogando",
+    "confidence": 0.85
+  },
+  {
+    "start": 157.44,
+    "end": 160.96,
+    "text": "N\u00e3o bate a a\u00e7\u00e3o, no batid\u00e3o, no batid\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 160.96,
+    "end": 162.96,
+    "text": "S\u00f3 pura tenta\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 162.96,
+    "end": 168.56,
+    "text": "Desce, ela sobe, no bali, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 168.56,
+    "end": 172.24,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 172.24,
+    "end": 176.04,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 176.04,
+    "end": 180.04,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 180.12,
+    "end": 183.51999999999998,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 183.51999999999998,
+    "end": 187.51999999999998,
+    "text": "Roupa meu cora\u00e7\u00e3o, vai equipando, vai jogando",
+    "confidence": 0.85
+  },
+  {
+    "start": 187.51999999999998,
+    "end": 190.51999999999998,
+    "text": "N\u00e3o pede a a\u00e7\u00e3o, no batid\u00e3o, no batid\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 190.51999999999998,
+    "end": 192.51999999999998,
+    "text": "S\u00f3 pura tenta\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 194.51999999999998,
+    "end": 197.51999999999998,
+    "text": "Parir, depress\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 197.51999999999998,
+    "end": 201.51999999999998,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 201.51999999999998,
+    "end": 205.51999999999998,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 205.51999999999998,
+    "end": 209.51999999999998,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 210.0,
+    "end": 213.0,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 213.0,
+    "end": 217.0,
+    "text": "Roupa meu cora\u00e7\u00e3o, vai equipando, vai jogando",
+    "confidence": 0.85
+  },
+  {
+    "start": 217.0,
+    "end": 220.0,
+    "text": "N\u00e3o bate a a\u00e7\u00e3o, no batid\u00e3o, no batid\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 220.0,
+    "end": 222.0,
+    "text": "S\u00f3 pura tenta\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 223.0,
+    "end": 226.0,
+    "text": "Desce, ela sobe, no bali, menina press\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 226.0,
+    "end": 228.0,
+    "text": "Menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 228.0,
+    "end": 231.0,
+    "text": "Roupa meu cora\u00e7\u00e3o, ela desce, ela sobe",
+    "confidence": 0.85
+  },
+  {
+    "start": 231.0,
+    "end": 235.0,
+    "text": "No bali, \u00e9 press\u00e3o, menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 235.0,
+    "end": 237.0,
+    "text": "Roupa meu cora\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 237.0,
+    "end": 240.48,
+    "text": "Ela desce, ela sobe, no bali, \u00e9 press\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 240.48,
+    "end": 242.48,
+    "text": "Menina linda, perigosa",
+    "confidence": 0.85
+  },
+  {
+    "start": 242.48,
+    "end": 246.48,
+    "text": "Roupa meu cora\u00e7\u00e3o, vai equipando, vai jogando",
+    "confidence": 0.85
+  },
+  {
+    "start": 246.48,
+    "end": 249.48,
+    "text": "N\u00e3o pede a a\u00e7\u00e3o, no batid\u00e3o, no batid\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 249.48,
+    "end": 251.48,
+    "text": "S\u00f3 pura tenta\u00e7\u00e3o",
+    "confidence": 0.85
+  },
+  {
+    "start": 267.0,
+    "end": 269.48,
+    "text": "\u266a instrumental \u266a",
+    "confidence": 0.1
+  }
+]}

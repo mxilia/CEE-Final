@@ -19,6 +19,7 @@ import (
 	favoriteSongHandler "github.com/mxilia/CEE-Final/internal/favorite_song"
 	karaokeHandler "github.com/mxilia/CEE-Final/internal/karaoke"
 	playHistoryHandler "github.com/mxilia/CEE-Final/internal/play_history"
+	scoreHistoryHandler "github.com/mxilia/CEE-Final/internal/score_history"
 
 	"github.com/mxilia/CEE-Final/pkg/config"
 )
@@ -43,6 +44,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	KaraokeJobHandler := karaokeHandler.NewHttpKaraokeHandler()
 	playHistoryHandler := playHistoryHandler.NewHttpPlayHistoryHandler(db, userUseCase, txManager)
 	favoriteSongHandler := favoriteSongHandler.NewHttpFavoriteSongHandler(db, txManager)
+	scoreHistoryHandler := scoreHistoryHandler.NewHttpScoreHistoryHandler(db)
 
 	/* === Routes === */
 
@@ -63,7 +65,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userGroup.Get("/email/:email", userHandler.FindUserByEmail)
 
 	songGroup := api.Group("/songs")
-	songGroup.Post("/", songHandler.CreateSong)
+	// songGroup.Post("/", songHandler.CreateSong)
 	songGroup.Get("/", songHandler.FindAllSongs)
 	songGroup.Get("/:id", songHandler.FindSongByID)
 	songGroup.Get("/:id/lyrics", KaraokeJobHandler.GetLyrics)
@@ -75,4 +77,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	favoriteSongGroup := api.Group("/favorite-songs")
 	favoriteSongGroup.Get("/user/:id", favoriteSongHandler.GetFavoriteSongsByUserID)
+
+	scoreHistoryGroup := api.Group("/score-history")
+	scoreHistoryGroup.Get("/user/:id", scoreHistoryHandler.GetScoreHistoryByUserID)
 }
