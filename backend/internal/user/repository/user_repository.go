@@ -11,6 +11,7 @@ type UserRepository interface {
 	FindByID(id uuid.UUID) (*entities.User, error)
 	FindByHandler(handler string) (*entities.User, error)
 	FindByEmail(email string) (*entities.User, error)
+	FindRanking(id uuid.UUID) (int64, error)
 	Count() (int64, error)
 	Patch(id uuid.UUID, user *entities.User) error
 	Delete(id uuid.UUID) error

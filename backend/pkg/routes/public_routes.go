@@ -63,6 +63,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	userGroup.Get("/:id", userHandler.FindUserByID)
 	userGroup.Get("/handler/:handler", userHandler.FindUserByHandler)
 	userGroup.Get("/email/:email", userHandler.FindUserByEmail)
+	userGroup.Get("/:id/ranking", userHandler.GetRanking)
 
 	songGroup := api.Group("/songs")
 	// songGroup.Post("/", songHandler.CreateSong)
@@ -74,6 +75,7 @@ func RegisterPublicRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 	playHistoryGroup := api.Group("/play-history")
 	playHistoryGroup.Get("/user/:id", playHistoryHandler.GetPlayHistoryByUserID)
+	playHistoryGroup.Get("/user/:id/best", playHistoryHandler.GetBestPerformance)
 
 	favoriteSongGroup := api.Group("/favorite-songs")
 	favoriteSongGroup.Get("/user/:id", favoriteSongHandler.GetFavoriteSongsByUserID)

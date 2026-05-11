@@ -85,6 +85,10 @@ func (s *UserService) FindUserByEmail(email string) (*entities.User, error) {
 	return user, nil
 }
 
+func (s *UserService) FindRanking(id uuid.UUID) (int64, error) {
+	return s.repo.FindRanking(id)
+}
+
 func (s *UserService) PatchUser(id uuid.UUID, user *entities.User) error {
 	if user.Handler != "" {
 		registeredUser, err := s.FindUserByHandler(user.Handler)
