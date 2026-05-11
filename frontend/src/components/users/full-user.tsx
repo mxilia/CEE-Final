@@ -28,8 +28,8 @@ export default function FullUser({User, isCurrentUser}: {User: UserDataProps, is
   const [isSaving, setIsSaving] = useState(false)
  
   const [formData, setFormData] = useState({
-    handler: User.handler,
-    profile_url: User.profile_url || ""
+    handler: User?.handler || "",
+    profile_url: User?.profile_url || ""
   })
 
   
@@ -42,12 +42,14 @@ export default function FullUser({User, isCurrentUser}: {User: UserDataProps, is
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "omit", 
+        credentials: "include", 
         body: JSON.stringify({
           handler: formData.handler,
           profile_url: formData.profile_url,
         }),
       })
+      
+      console.log("Profile update response naja:", res) // Debug log to verify API response
 
       if (!res.ok) {
         throw new Error("Failed to update profile")

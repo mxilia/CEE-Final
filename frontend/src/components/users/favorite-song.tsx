@@ -17,6 +17,8 @@ export default function FavoriteSong({ userId, isCurrentUser }: { userId: number
   const favorites = data ? data.flatMap((page) => page.data) : []
   const hasMore = data && data[data.length - 1]?.meta?.page < data[data.length - 1]?.meta?.totalPages
 
+  console.log("Fetched favorite songs data:", favorites) // Debug log to verify fetched data
+  
   return (
     <div className="relative flex flex-col rounded-2xl border border-neutral-800 bg-[#0a0a0a] p-6 sm:p-8 w-full">
       
