@@ -88,7 +88,7 @@ export default function FullUser({User, isCurrentUser}: {User: UserDataProps, is
             <>
               <button 
                 onClick={() => {
-                  setFormData({ handler: User.handler, profile_url: User.profile_url || "" })
+                  setFormData({ handler: User.handler || "", profile_url: User.profile_url || "" })
                   setIsEditing(false)
                 }} 
                 disabled={isSaving}
