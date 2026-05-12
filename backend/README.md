@@ -1,5 +1,8 @@
 # KaraOkay backend
-This is the backend service for KaraOkay website. 
+This is the backend service for KaraOkay website.
+## Tech Stack
+ - Go
+ - Fiber
 ## Prerequisites
  - Docker
  - Docker Compose

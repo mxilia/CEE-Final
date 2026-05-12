@@ -1,5 +1,10 @@
 # KaraOkay frontend
 This is the frontend service for KaraOkay website.
+## Tech Stack
+ - Next.js
+ - SWR
+ - Zod
+ - Sendbird (External API for managing chat)
 ## Prerequisites
  - npm
  - Node.js (v18 or later)
