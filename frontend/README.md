@@ -26,6 +26,7 @@ Make .env file and fill in fields like this:
 ```yaml
 NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_SENDBIRD_APP_ID=YOUR_VALUE
 ```
 Write your own values for corresponding variables.
 
