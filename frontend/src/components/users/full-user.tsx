@@ -137,11 +137,11 @@ export default function FullUser({ User: userData, isCurrentUser }: { User: User
                         {/* --- NEW STATS GRID --- */}
                         <div className="grid grid-cols-2 xs:flex xs:flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-3 pt-2">
                             <MiniStat icon={<Trophy size={14}/>} value={rankingData?.ranking || "—"} label="Rank" color="text-yellow-500" />
-                            <MiniStat icon={<Mic2 size={14}/>} value={userData.total_score?.toLocaleString() || "0"} label="Total Score" color="text-green-500" />
-                            <MiniStat icon={<Target size={14}/>} value={`${userData.accuracy.toFixed(1)}%`} label="Accuracy" color="text-blue-500" />
-                            <MiniStat icon={<Zap size={14}/>} value={userData.max_combo ?? 0} label="Max Combo" color="text-orange-500" />
-                            <MiniStat icon={<Activity size={14}/>} value={userData.sing_count ?? 0} label="Sessions" color="text-purple-500" />
-                            <MiniStat icon={<Flame size={14}/>} value={userData.minutes_played?.toFixed(1) || "0"} label="Minutes Played" color="text-red-500" />
+                            <MiniStat icon={<Mic2 size={14}/>} value={userData ? userData.total_score?.toLocaleString() || "0" : "0"} label="Total Score" color="text-green-500" />
+                            <MiniStat icon={<Target size={14}/>} value={`${userData?.accuracy.toFixed(1) || "0"}%`} label="Accuracy" color="text-blue-500" />
+                            <MiniStat icon={<Zap size={14}/>} value={userData?.max_combo ?? 0} label="Max Combo" color="text-orange-500" />
+                            <MiniStat icon={<Activity size={14}/>} value={userData?.sing_count ?? 0} label="Sessions" color="text-purple-500" />
+                            <MiniStat icon={<Flame size={14}/>} value={userData?.minutes_played?.toFixed(1) || "0"} label="Minutes Played" color="text-red-500" />
                         </div>
                     </div>
                 </div>

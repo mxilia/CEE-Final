@@ -21,8 +21,8 @@ export default function BestPlay({ userId }: BestPlayProps) {
 
   console.log("BestPerformanceData:", BestPerformanceData) // Debug log to verify best performance data
 
-  const score = BestPerformanceData?.data.total_score || 0;
-  const songName = BestPerformanceData?.data.song.title || "No Data Recorded";
+  const score = BestPerformanceData ? BestPerformanceData?.data.total_score || 0 : 0;
+  const songName = BestPerformanceData ? BestPerformanceData?.data.song.title || "No Data Recorded" : "No Data Recorded";
 
   return (
     <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden">
@@ -76,14 +76,14 @@ export default function BestPlay({ userId }: BestPlayProps) {
           <div className="flex flex-col border-l-2 border-yellow-500/50 pl-3">
             <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Max Combo</span>
             <div className="flex items-baseline gap-1">
-               <span className="text-xl font-black text-white tabular-nums">{BestPerformanceData?.data.max_combo || 0}</span>
+               <span className="text-xl font-black text-white tabular-nums">{BestPerformanceData ? BestPerformanceData?.data.max_combo || 0 : 0}</span>
                <span className="text-[10px] font-black text-zinc-700">X</span>
             </div>
           </div>
           <div className="flex flex-col border-l-2 border-zinc-800 pl-3">
             <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Accuracy</span>
             <div className="flex items-baseline gap-1">
-               <span className="text-xl font-black text-white tabular-nums">{BestPerformanceData?.data.accuracy || "0.0"}</span>
+               <span className="text-xl font-black text-white tabular-nums">{BestPerformanceData ? BestPerformanceData?.data.accuracy || "0.0" : "0.0"}</span>
                <span className="text-[10px] font-black text-zinc-700">%</span>
             </div>
           </div>
