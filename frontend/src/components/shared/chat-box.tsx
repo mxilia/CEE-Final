@@ -14,7 +14,7 @@ type ChatMessage = {
 
 type Status = "idle" | "connecting" | "connected" | "error"
 
-const CHANNEL_URL = "karaoke-global-chat"
+const CHANNEL_URL = "karaoke-live-chat"
 
 export default function ChatBox() {
     const [isOpen, setIsOpen] = useState(false)
