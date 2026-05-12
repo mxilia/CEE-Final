@@ -10,13 +10,17 @@ interface BestPlayProps {
 
 export default function BestPlay({ userId }: BestPlayProps) {
   // Logic/Fallbacks
-  const { data: BestPerformanceData, isLoading: isBestPerformanceLoading } = useSWR(userId ? `${env.API_URL}/play-history/user/${userId}/best` : null, {
+  const { data: BestPerformanceData, isLoading: isBestPerformanceLoading, error } = useSWR(`${env.API_URL}/play-history/user/${userId}/best`, {
     fetcher: (url) => fetch(url, { credentials: "include" }).then(res => res.json()),
     suspense: true,
   })
 
   if (isBestPerformanceLoading) {
     return <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden">Error loading best performance data.</div>;
   }
 
   console.log("BestPerformanceData:", BestPerformanceData) // Debug log to verify best performance data
