@@ -31,3 +31,12 @@ KaraOkay is a web-based karaoke platform that scores users based on real-time pi
  - Ravint Kosol 6832191421
  - Chatchai Phanitsakunchai 6832046121
  - Chanatee Boobpachat 6832039821
+
+## Disclaimer
+
+This project was created for educational purposes as part of a university assignment.
+
+All copyrighted music, lyrics, and related media belong to their respective owners.  
+No copyright infringement is intended.
+
+Audio files are not included in this repository. Users must provide their own legally obtained media files.
