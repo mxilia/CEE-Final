@@ -46,3 +46,27 @@ Then docker compose to get the service running:
 ```bash
 docker compose up -d
 ```
+
+To add new songs:
+
+1. Use karaoke-generator, follow the [documentation](../karaoke-generator/README.md) step by step.
+2. After that, make new folder named after the id of your song inside [./backend/asset/songs](./backend/asset/songs).
+3. Copy pitch.json, lyrics.json, instrumental.mp3 (Make sure to change .flac to .mp3) into the newly made folder.
+4. Go to [./backend/internal/app/app.go](./backend/internal/app/app.go), fill the new song struct into this part of the code:
+```go
+func setUpSongs(db *gorm.DB) error {
+	songs := []entities.Song{
+		{ID: NEW_ID (uint), Title: "NEW_TITLE", Artist: "NEW_ARTIST"},
+	}
+	return db.
+		Clauses(clause.OnConflict{DoNothing: true}).
+		Create(&songs).Error
+}
+```
+
+After that run these commands:
+
+```bash
+docker compose down
+docker compose up -d
+```
