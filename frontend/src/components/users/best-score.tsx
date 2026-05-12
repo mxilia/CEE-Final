@@ -1,7 +1,7 @@
 "use client";
 
 import { env } from "@/src/config/env";
-import { Trophy, Music2, Zap } from "lucide-react";
+import { Trophy, Music2, Zap, Activity } from "lucide-react";
 import useSWR from "swr";
 
 interface BestPlayProps {
@@ -65,8 +65,48 @@ export default function BestPlay({ userId }: BestPlayProps) {
   // No Data State
   if (!BestPerformanceData?.data) {
     return (
-      <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden">
-        No performance data available.
+      <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden min-h-[440px]">
+        {/* HUD Label */}
+        <div className="absolute top-0 left-0 bg-zinc-800 text-zinc-400/30 text-[10px] font-black px-4 py-1 rounded-br-xl uppercase tracking-widest">
+          Personal Best
+        </div>
+
+        {/* Header - Muted */}
+        <div className="flex items-center gap-2 mb-6 mt-4 opacity-20">
+          <Trophy size={18} className="text-zinc-500" />
+          <h2 className="text-xl font-black italic text-white tracking-tighter uppercase">
+            Top Performance
+          </h2>
+        </div>
+
+        {/* Main Content Area with Ghost Grid */}
+        <div className="flex-1 relative flex flex-col items-center justify-center border border-white/5 rounded-xl bg-zinc-900/20 overflow-hidden">
+          {/* Scanning Grid Background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px]" />
+          
+          <div className="relative z-10 flex flex-col items-center gap-3">
+            <div className="p-4 rounded-full bg-white/5 border border-white/5">
+              <Trophy size={32} className="text-zinc-800" />
+            </div>
+            <div className="flex flex-col items-center italic">
+              <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">
+                No Records Found
+              </span>
+              <span className="text-[9px] font-bold text-zinc-700 uppercase tracking-widest mt-1">
+                Awaiting first deployment...
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer - Muted */}
+        <div className="mt-8 flex items-center gap-4 opacity-10">
+          <div className="h-0.5 w-8 bg-white" />
+          <div className="h-0.5 flex-1 bg-white/20" />
+          <span className="text-[8px] font-black text-white uppercase tracking-[0.5em] whitespace-nowrap">
+            Empty Data Log
+          </span>
+        </div>
       </div>
     );
   }

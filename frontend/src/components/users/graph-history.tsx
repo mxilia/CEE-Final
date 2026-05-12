@@ -12,6 +12,7 @@ interface ScoreHistory {
   total_score: number;
 }
 
+
 export default function GraphHistory({ userId }: { userId: string }) {
   const { data, isLoading } = useSWR<{ data: ScoreHistory[] }>(
     userId ? `${env.API_URL}/score-history/user/${userId}` : null,
