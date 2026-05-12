@@ -62,18 +62,16 @@ Step 2: Pitch Extraction (extract_pitch.py)
 Processes the vocal stem to create pitch.json. This script utilizes Apple Metal (MPS) for hardware acceleration.
 ```Bash
 python extract_pitch.py
-Step 3: Lyric Generation (whisper)
 ```
 
+Step 3: Lyric Generation (whisper)
 Use the Whisper CLI to generate the segment-based JSON file from the vocal stem.
-
 ```Bash
 whisper "./stems/vocals.flac" --model medium --output_format json
-Step 4: Refinement (preprocessed_karaoke.py)
 ```
 
+Step 4: Refinement (preprocessed_karaoke.py)
 Aligns the Whisper segments with the detected pitch regions to ensure lyrics are perfectly synced to the vocal activity.
-
 ```Bash
 python preprocessed_karaoke.py
 ```
