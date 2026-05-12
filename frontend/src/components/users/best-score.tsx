@@ -65,7 +65,7 @@ export default function BestPlay({ userId }: BestPlayProps) {
   // No Data State
   if (!BestPerformanceData?.data) {
     return (
-      <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden min-h-[440px]">
+      <div className="relative flex flex-col rounded-2xl border border-white/5 bg-zinc-950 p-5 w-full shadow-2xl overflow-hidden min-h-110">
         {/* HUD Label */}
         <div className="absolute top-0 left-0 bg-zinc-800 text-zinc-400/30 text-[10px] font-black px-4 py-1 rounded-br-xl uppercase tracking-widest">
           Personal Best
@@ -82,7 +82,7 @@ export default function BestPlay({ userId }: BestPlayProps) {
         {/* Main Content Area with Ghost Grid */}
         <div className="flex-1 relative flex flex-col items-center justify-center border border-white/5 rounded-xl bg-zinc-900/20 overflow-hidden">
           {/* Scanning Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-size-[20px_20px]" />
           
           <div className="relative z-10 flex flex-col items-center gap-3">
             <div className="p-4 rounded-full bg-white/5 border border-white/5">
